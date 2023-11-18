@@ -18,7 +18,9 @@ export class AuthService {
   ) {}
 
   async signUp(signUpDto: SignUpDto): Promise<User> {
-    const { password } = signUpDto;
+    const { email, password } = signUpDto;
+
+    await this.findRegisteredEmail(email);
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -31,6 +33,17 @@ export class AuthService {
     this.logger.info('Created user:', newUser);
 
     return newUser;
+  }
+
+  async findRegisteredEmail(email: string): Promise<void> {
+    const fetchedUser = await this.userModel.findOne({ email });
+
+    if (fetchedUser) {
+      throw new HttpException(
+        'This email is already registered',
+        HttpStatus.CONFLICT,
+      );
+    }
   }
 
   async signIn(signInDto: SignInDto): Promise<User> {
@@ -46,7 +59,7 @@ export class AuthService {
     if (email == fetchedUser.email) {
       throw new HttpException(
         'This email is already registered',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.CONFLICT,
       );
     }
 
