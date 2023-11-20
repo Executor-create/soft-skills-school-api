@@ -41,7 +41,7 @@ jobs:
       - name: Set permissions for private key
         run: |
           echo "${{ env.AWS_PRIVATE_KEY }}" > key.pem
-          chmod 600 key.pm
+          chmod 600 key.pem
       - name: Pull Docker image
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'sudo docker pull bloodyexecutor/ec2:latest'
