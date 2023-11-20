@@ -1,5 +1,26 @@
-import { IsString, IsNumber, IsEmail, IsNotEmpty } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  IsEmail,
+  IsNotEmpty,
+  Min,
+  Max,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+  Validate,
+} from 'class-validator';
 import { PickType } from '@nestjs/mapped-types';
+
+@ValidatorConstraint({ name: 'isGender', async: false })
+class IsGender implements ValidatorConstraintInterface {
+  validate(value: string) {
+    return value === 'Male' || value === 'Female';
+  }
+
+  defaultMessage(): string {
+    return 'The gender must be either male or female';
+  }
+}
 
 export class SignUpDto {
   @IsNotEmpty()
@@ -20,10 +41,13 @@ export class SignUpDto {
 
   @IsNotEmpty()
   @IsString()
+  @Validate(IsGender)
   sex: string;
 
   @IsNotEmpty()
   @IsNumber()
+  @Min(1)
+  @Max(6)
   course: number;
 
   @IsNotEmpty()
