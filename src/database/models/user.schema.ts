@@ -27,6 +27,9 @@ export class User {
   direction: string;
 
   @Prop()
+  token: string;
+
+  @Prop()
   created_at: Date;
 }
 
