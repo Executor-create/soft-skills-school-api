@@ -28,6 +28,9 @@ jobs:
           push: true
           dockerfile: ./Dockerfile
           tags: bloodyexecutor/ec2:latest
+      - name: Install Docker
+        run: |
+          apt-get install docker
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -43,6 +46,7 @@ jobs:
         run: |
           echo "${{ env.AWS_PRIVATE_KEY }}" > key.pem
           chmod 600 key.pem
+          echo key.pem
       - name: Pull Docker image
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'sudo docker pull bloodyexecutor/ec2:latest'
