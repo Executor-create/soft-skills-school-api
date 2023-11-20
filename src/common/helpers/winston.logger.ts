@@ -28,6 +28,10 @@ export class LoggerService {
   info(message: string, meta?: any) {
     this.logger.info(`${message} ${JSON.stringify(meta)}`);
   }
+
+  error(message: string) {
+    this.logger.error(message);
+  }
 }
 
 export const log: Logger = new LoggerService().logger;
