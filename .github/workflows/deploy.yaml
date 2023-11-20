@@ -49,11 +49,11 @@ jobs:
           echo key.pem
       - name: Pull Docker image
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'sudo docker pull bloodyexecutor/ec2:latest'
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'docker pull bloodyexecutor/ec2:latest'
       - name: Stop running container
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'sudo docker stop ec2 || true'
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'sudo docker rm ec2 || true'
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'docker stop ec2 || true'
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'docker rm ec2 || true'
       - name: Run new container
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'sudo docker run -d --name cddemo -p 3000:3000 bloodyexecutor/ec2:latest'
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'docker run -d --name ec2 -p 3000:3000 bloodyexecutor/ec2:latest'
