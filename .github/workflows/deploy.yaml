@@ -34,10 +34,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Install Docker
-        run: |
-          curl -sSL https://get.docker.com/ | sudo sh
-          docker --version
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
@@ -48,6 +44,12 @@ jobs:
           echo "${{ env.AWS_PRIVATE_KEY }}" > key.pem
           chmod 600 key.pem
           echo key.pem
+      - name: Install Docker
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'curl -sSL https://get.docker.com/ | sudo sh'
+      - name: Check Docker version
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'docker --version'
       - name: Pull Docker image
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'sudo docker pull bloodyexecutor/ec2:latest'
