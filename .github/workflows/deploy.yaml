@@ -30,7 +30,7 @@ jobs:
           tags: bloodyexecutor/ec2:latest
       - name: Install Docker
         run: |
-          apt-get install docker
+          sudo apt-get install docker
   deploy:
     needs: build
     runs-on: ubuntu-latest
