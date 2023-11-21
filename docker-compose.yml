@@ -2,7 +2,7 @@ version: '3'
 
 services:
   app:
-    image: soft-skills-school/ec2:latest
+    image: bloodyexecutor/ec2:latest
     container_name: ec2
     restart: always
     ports:
