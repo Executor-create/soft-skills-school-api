@@ -46,17 +46,17 @@ jobs:
           echo key.pem
       - name: Install Docker
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'curl -sSL https://get.docker.com/ | sudo sh'
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'curl -sSL https://get.docker.com/ | sudo sh'
       - name: Check Docker version
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'docker --version'
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'docker --version'
       - name: Pull Docker image
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'sudo docker pull bloodyexecutor/ec2:latest'
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo docker pull bloodyexecutor/ec2:latest'
       - name: Stop running container
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'sudo docker stop ec2 || true'
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'sudo docker rm ec2 || true'
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo docker stop ec2 || true'
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo docker rm ec2 || true'
       - name: Run new container
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'sudo docker run -d --name ec2 -p 80:3000 bloodyexecutor/ec2:latest'
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo docker run -d --name ec2 -p 80:3000 bloodyexecutor/ec2:latest'
