@@ -44,6 +44,9 @@ jobs:
           echo "${{ env.AWS_PRIVATE_KEY }}" > key.pem
           chmod 600 key.pem
           echo key.pem
+      - name: Copy .env file to EC2
+        run: |
+          scp -o StrictHostKeyChecking=no -i key.pem .env ubuntu@50.19.199.43:~
       - name: Install Docker
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@50.19.199.43 'curl -sSL https://get.docker.com/ | sudo sh'
