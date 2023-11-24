@@ -7,5 +7,6 @@ services:
     restart: always
     ports:
       - '3000:3000'
-    env_file:
-      - .env
+    environment:
+      - MONGO_URL=${MONGO_URL}
+      - JWT_SECRET=${JWT_SECRET}
