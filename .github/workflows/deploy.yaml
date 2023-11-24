@@ -47,9 +47,6 @@ jobs:
       - name: Install Docker
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'curl -sSL https://get.docker.com/ | sudo sh'
-      - name: Install Yarn
-        run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo apt install yarn'
       - name: Check Docker version
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'docker --version'
