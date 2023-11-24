@@ -6,6 +6,6 @@ services:
     container_name: ec2
     restart: always
     ports:
-      - '3000:3000'
+      - '80:3000'
     env_file:
       - ./.env
