@@ -4,6 +4,7 @@ services:
   app:
     image: bloodyexecutor/ec2:latest
     container_name: ec2
+    build: .
     restart: always
     ports:
       - '80:3000'
