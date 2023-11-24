@@ -8,5 +8,5 @@ services:
     ports:
       - '80:3000'
     environment:
-      - MONGO_URL: '${MONGO_URL}'
-      - JWT_SECRET: '${JWT_SECRET}'
+      - MONGO_URL=${MONGO_URL}
+      - JWT_SECRET=${JWT_SECRET}
