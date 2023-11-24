@@ -6,13 +6,6 @@ services:
     container_name: ec2
     restart: always
     ports:
-<<<<<<< HEAD
-      - '80:3000'
-    environment:
-      - MONGO_URL=${MONGO_URL}
-      - JWT_SECRET=${JWT_SECRET}
-=======
       - '3000:3000'
     env_file:
       - ./.env
->>>>>>> feature/debug-gh-actions
