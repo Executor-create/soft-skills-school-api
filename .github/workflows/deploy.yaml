@@ -58,9 +58,6 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo docker stop ec2 || true'
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo docker rm ec2 || true'
-      - name: Run Docker Compose
-        run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo docker-compose up -d'
       - name: Run new container
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo docker run -d --name ec2 -p 80:3000 bloodyexecutor/ec2:latest'
