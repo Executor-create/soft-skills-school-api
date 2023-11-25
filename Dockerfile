@@ -8,7 +8,7 @@ RUN yarn install
 
 COPY . .
 
-COPY .env .env
+COPY .env ./
 
 EXPOSE 3000
 
