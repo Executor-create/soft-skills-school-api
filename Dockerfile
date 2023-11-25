@@ -8,8 +8,6 @@ RUN yarn install
 
 COPY . .
 
-ENV MONGO_URL = proccess.env.MONGO_URL
-
 EXPOSE 3000
 
 RUN yarn build
