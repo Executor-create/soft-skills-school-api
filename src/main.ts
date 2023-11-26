@@ -10,6 +10,7 @@ async function bootstrap() {
     cors: true,
   });
   app.useGlobalPipes(new ValidationPipe());
+  console.log(`Listening port: ${process.env.PORT}`);
   await app.listen(process.env.PORT);
 }
 bootstrap();
