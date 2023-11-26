@@ -8,6 +8,8 @@ RUN yarn install
 
 COPY . .
 
+ENV PORT=$PORT
+
 ENV MONGO_URL=$MONGO_URL
 
 EXPOSE 80
