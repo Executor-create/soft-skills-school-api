@@ -8,7 +8,7 @@ RUN yarn install
 
 COPY . .
 
-ENV MONGO_URL = $MONGO_URL
+ENV MONGO_URL=$MONGO_URL
 
 EXPOSE 3000
 
