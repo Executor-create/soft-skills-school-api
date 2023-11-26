@@ -10,7 +10,7 @@ COPY . .
 
 ENV MONGO_URL=$MONGO_URL
 
-EXPOSE 3000
+EXPOSE 80
 
 RUN yarn build
 
