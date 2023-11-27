@@ -1,15 +1,18 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { User } from 'src/types/user.type';
-import { SignInDto, SignUpDto } from './dto/auth.dto';
+import { SignInDto, SignUpDto, UserClass } from './dto/auth.dto';
 import { AuthService } from './auth.service';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { OmitType } from '@nestjs/mapped-types';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/signup')
   @ApiResponse({
+    type: OmitType(UserClass, ['token']),
     status: 201,
     description: 'The user has been successfully created',
   })
@@ -26,6 +29,7 @@ export class AuthController {
 
   @Post('/signin')
   @ApiResponse({
+    type: UserClass,
     status: 200,
     description: 'The user has successfully logged in',
   })
