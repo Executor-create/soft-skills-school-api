@@ -9,8 +9,8 @@ import {
   ValidatorConstraintInterface,
   Validate,
 } from 'class-validator';
-import { ApiProperty, OmitType } from '@nestjs/swagger';
-import { PickType } from '@nestjs/mapped-types';
+import { ApiProperty } from '@nestjs/swagger';
+import { OmitType, PickType } from '@nestjs/mapped-types';
 
 @ValidatorConstraint({ name: 'isGender', async: false })
 class IsGender implements ValidatorConstraintInterface {
@@ -23,7 +23,7 @@ class IsGender implements ValidatorConstraintInterface {
   }
 }
 
-export class UserClass {
+export class AuthDto {
   @ApiProperty({
     example: 'John',
     required: true,
@@ -90,9 +90,12 @@ export class UserClass {
   token: string;
 }
 
-export class SignUpDto extends OmitType(UserClass, ['token', 'created_at']) {}
+export class SignUpDto extends OmitType(AuthDto, [
+  'token',
+  'created_at',
+] as const) {}
 
-export class SignInDto extends PickType(SignUpDto, [
+export class SignInDto extends PickType(AuthDto, [
   'email',
   'password',
 ] as const) {}
