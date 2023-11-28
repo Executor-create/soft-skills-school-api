@@ -3,6 +3,11 @@ import { User } from 'src/types/user.type';
 import { AuthDto, SignInDto, SignUpDto } from './dto/auth.dto';
 import { AuthService } from './auth.service';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  SignInRequest,
+  SignUpRequest,
+  SignUpResponse,
+} from './dto/auth-swagger.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -11,10 +16,12 @@ export class AuthController {
 
   @Post('/signup')
   @ApiResponse({
+    type: SignUpResponse,
     status: 201,
     description: 'The user has been successfully created',
   })
   @ApiBody({
+    type: SignUpRequest,
     description: 'JSON structure for user',
   })
   @HttpCode(201)
@@ -31,6 +38,7 @@ export class AuthController {
     description: 'The user has successfully logged in',
   })
   @ApiBody({
+    type: SignInRequest,
     description: 'JSON structure for user sign in',
   })
   @HttpCode(200)
