@@ -2,7 +2,7 @@ import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { User } from 'src/types/user.type';
 import { AuthDto, SignInDto, SignUpDto } from './dto/auth.dto';
 import { AuthService } from './auth.service';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   SignInRequest,
   SignUpRequest,
@@ -15,6 +15,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/signup')
+  @ApiOperation({ summary: 'Create new user account' })
   @ApiBody({
     type: SignUpRequest,
     description: 'JSON structure for user',
@@ -33,6 +34,10 @@ export class AuthController {
   }
 
   @Post('/signin')
+  @ApiOperation({
+    summary:
+      'Allows registered users to authenticate and obtain an access token',
+  })
   @ApiBody({
     type: SignInRequest,
     description: 'JSON structure for user sign in',
