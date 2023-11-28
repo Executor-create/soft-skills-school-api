@@ -53,7 +53,7 @@ export class AuthService {
 
     if (!fetchedUser) {
       this.logger.error('User not found');
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
     this.logger.info('Found user:', fetchedUser);
