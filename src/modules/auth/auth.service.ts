@@ -56,13 +56,6 @@ export class AuthService {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
 
-    if (email == fetchedUser.email) {
-      throw new HttpException(
-        'This email is already registered',
-        HttpStatus.CONFLICT,
-      );
-    }
-
     this.logger.info('Found user:', fetchedUser);
 
     const comparedPassword = await bcrypt.compare(
