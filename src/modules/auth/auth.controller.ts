@@ -15,15 +15,16 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/signup')
+  @ApiBody({
+    type: SignUpRequest,
+    description: 'JSON structure for user',
+  })
   @ApiResponse({
     type: SignUpResponse,
     status: 201,
     description: 'The user has been successfully created',
   })
-  @ApiBody({
-    type: SignUpRequest,
-    description: 'JSON structure for user',
-  })
+  @ApiResponse({ status: 409, description: 'This email is already registered' })
   @HttpCode(201)
   async signUp(@Body() signUpDto: SignUpDto): Promise<User> {
     const user = await this.authService.signUp(signUpDto);
@@ -32,14 +33,22 @@ export class AuthController {
   }
 
   @Post('/signin')
+  @ApiBody({
+    type: SignInRequest,
+    description: 'JSON structure for user sign in',
+  })
   @ApiResponse({
     type: AuthDto,
     status: 200,
     description: 'The user has successfully logged in',
   })
-  @ApiBody({
-    type: SignInRequest,
-    description: 'JSON structure for user sign in',
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Incorrect email or password',
   })
   @HttpCode(200)
   async signIn(@Body() signInDto: SignInDto): Promise<User> {
