@@ -6,6 +6,7 @@ import { CreateQuestionDto } from './dto/question.dto';
 import { Question } from 'src/types/question.type';
 import { LoggerService } from 'src/common/helpers/winston.logger';
 import { findByIdDto } from 'src/common/dto/findById.dto';
+import { deleteByIdDto } from 'src/common/dto/deleteById.dto';
 
 @Injectable()
 export class QuestionService {
@@ -39,5 +40,20 @@ export class QuestionService {
     }
 
     return fetchedUser;
+  }
+
+  async delete(questionId: deleteByIdDto): Promise<Question> {
+    const { id } = questionId;
+
+    const deletedUser = await this.questionModel.findByIdAndDelete(id);
+
+    this.logger.info('Deleted user:', deletedUser);
+
+    if (!deletedUser) {
+      this.logger.error('Question not found');
+      throw new HttpException('Question not found', HttpStatus.NOT_FOUND);
+    }
+
+    return deletedUser;
   }
 }
