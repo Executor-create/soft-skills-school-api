@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Question as QuestionDB } from 'src/database/models/question.schema';
 import { CreateQuestionDto } from './dto/question.dto';
 import { Question } from 'src/types/question.type';
 import { LoggerService } from 'src/common/helpers/winston.logger';
+import { findByIdDto } from 'src/common/dto/findById.dto';
 
 @Injectable()
 export class QuestionService {
@@ -23,5 +24,20 @@ export class QuestionService {
     this.logger.info('Created question:', newQuestion);
 
     return newQuestion;
+  }
+
+  async get(questionId: findByIdDto): Promise<Question> {
+    const { id } = questionId;
+
+    const fetchedUser = await this.questionModel.findById(id);
+
+    this.logger.info('Fetched user:', fetchedUser);
+
+    if (!fetchedUser) {
+      this.logger.error('Question not found');
+      throw new HttpException('Question not found', HttpStatus.NOT_FOUND);
+    }
+
+    return fetchedUser;
   }
 }
