@@ -4,6 +4,14 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class QuestionDto {
   @ApiProperty({
+    example: '507f1f77bcf86cd799439011',
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsString()
+  _id: string;
+
+  @ApiProperty({
     example: 'You are good communicator',
     required: true,
   })
@@ -40,5 +48,11 @@ export class QuestionDto {
 }
 
 export class CreateQuestionDto extends OmitType(QuestionDto, [
+  '_id',
+  'created_at',
+] as const) {}
+
+export class UpdateQuestionDto extends OmitType(QuestionDto, [
+  '_id',
   'created_at',
 ] as const) {}
