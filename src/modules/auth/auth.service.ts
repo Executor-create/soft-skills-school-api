@@ -7,6 +7,7 @@ import { SignInDto, SignUpDto } from './dto/auth.dto';
 import { LoggerService } from 'src/common/helpers/winston.logger';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { UserRole } from 'src/common/enums/user-role.enum';
 
 @Injectable()
 export class AuthService {
@@ -26,6 +27,7 @@ export class AuthService {
 
     const user = new this.userModel(signUpDto);
     user.password = hashedPassword;
+    user.role = UserRole.USER;
     user.created_at = new Date();
 
     const newUser = await user.save();
@@ -77,8 +79,8 @@ export class AuthService {
   }
 
   async addJwtToken(user: UserDocument): Promise<User> {
-    const { _id, email } = user;
-    const payload = { sub: _id, email: email };
+    const { _id, email, role } = user;
+    const payload = { sub: _id, email: email, role: role };
 
     const token = await this.jwtService.signAsync(payload);
 
