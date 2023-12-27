@@ -7,7 +7,7 @@ import { SignInDto, SignUpDto } from './dto/auth.dto';
 import { LoggerService } from 'src/common/helpers/winston.logger';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { UserRole } from 'src/common/enums/user-role.enum';
+import { Role } from 'src/common/enums/user-role.enum';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +27,7 @@ export class AuthService {
 
     const user = new this.userModel(signUpDto);
     user.password = hashedPassword;
-    user.role = UserRole.USER;
+    user.role = Role.USER;
     user.created_at = new Date();
 
     const newUser = await user.save();
