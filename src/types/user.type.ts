@@ -6,6 +6,7 @@ export type User = {
   sex: string;
   course: number;
   direction: string;
+  role: string;
   token: string;
   created_at: Date;
 };

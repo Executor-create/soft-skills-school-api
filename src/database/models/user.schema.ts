@@ -27,6 +27,9 @@ export class User {
   direction: string;
 
   @Prop()
+  role: string;
+
+  @Prop()
   token: string;
 
   @Prop()

@@ -83,6 +83,12 @@ export class AuthDto {
   @IsString()
   direction: string;
 
+  @ApiProperty({
+    example: 'USER',
+    required: true,
+  })
+  role: string;
+
   @ApiProperty()
   created_at: Date;
 
@@ -91,6 +97,7 @@ export class AuthDto {
 }
 
 export class SignUpDto extends OmitType(AuthDto, [
+  'role',
   'token',
   'created_at',
 ] as const) {}
