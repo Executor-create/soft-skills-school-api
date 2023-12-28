@@ -1,6 +1,15 @@
-import { Controller, Get, HttpCode, Param, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -10,11 +19,17 @@ import { User } from 'src/types/user.type';
 import { UserService } from './user.service';
 import { isValidObjectId } from 'mongoose';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { GetUserResponse } from './dto/user-swagger.dto';
+import {
+  GetUserResponse,
+  UpdateUserRequest,
+  UpdateUserResponse,
+} from './dto/user-swagger.dto';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/user-role.enum';
 import { RolesGuard } from 'src/common/guards/role.guard';
+import { UpdateByIdDto } from 'src/common/dto/updateById.dto';
+import { UpdateUserDto } from './dto/user.dto';
 
 @ApiTags('User')
 @Controller('users')
@@ -44,5 +59,37 @@ export class UserController {
     const fetchedUser = await this.userService.findUserById(id);
 
     return fetchedUser;
+  }
+
+  @Patch(':id')
+  @HttpCode(200)
+  @Roles(Role.USER, Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Update user' })
+  @ApiBearerAuth()
+  @ApiBody({
+    type: UpdateUserRequest,
+    description: 'JSON structure for update user',
+  })
+  @ApiResponse({
+    type: UpdateUserResponse,
+    status: 200,
+    description: 'The user has been successfully updated',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+  })
+  async updateUser(
+    @Param() id: UpdateByIdDto,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<User> {
+    if (!isValidObjectId(id)) {
+      throw new HttpException('Invalid ID', HttpStatus.BAD_REQUEST);
+    }
+
+    const updatedUser = await this.userService.update(id, updateUserDto);
+
+    return updatedUser;
   }
 }
