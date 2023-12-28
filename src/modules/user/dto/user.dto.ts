@@ -1,5 +1,12 @@
+import { OmitType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsNumber, IsEmail } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsNumber,
+  IsEmail,
+  IsOptional,
+} from 'class-validator';
 
 export class UserDto {
   @ApiProperty({
@@ -71,4 +78,31 @@ export class UserDto {
 
   @ApiProperty()
   token: string;
+}
+
+export class UpdateUserDto extends OmitType(UserDto, [
+  '_id',
+  'created_at',
+  'token',
+] as const) {
+  @IsOptional()
+  firstName: string;
+
+  @IsOptional()
+  lastName: string;
+
+  @IsOptional()
+  email: string;
+
+  @IsOptional()
+  password: string;
+
+  @IsOptional()
+  sex: string;
+
+  @IsOptional()
+  course: number;
+
+  @IsOptional()
+  direction: string;
 }
