@@ -1,3 +1,5 @@
+import { Role } from 'src/common/enums/user-role.enum';
+
 export type User = {
   firstName: string;
   lastName: string;
@@ -6,7 +8,7 @@ export type User = {
   sex: string;
   course: number;
   direction: string;
-  role: string;
+  role: Role;
   token: string;
   created_at: Date;
 };

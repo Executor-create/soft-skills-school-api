@@ -7,13 +7,20 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { Question } from 'src/types/question.type';
 import { QuestionService } from './question.service';
 import { CreateQuestionDto, UpdateQuestionDto } from './dto/question.dto';
 import { findByIdDto } from 'src/common/dto/findById.dto';
 import { deleteByIdDto } from 'src/common/dto/deleteById.dto';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import {
   CreateQuestionRequest,
   CreateQuestionResponse,
@@ -23,6 +30,10 @@ import {
   UpdateQuestionResponse,
 } from './dto/question-swagger.dto';
 import { UpdateByIdDto } from 'src/common/dto/updateById.dto';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/user-role.enum';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { RolesGuard } from 'src/common/guards/role.guard';
 
 @ApiTags('Question')
 @Controller('questions')
@@ -31,7 +42,10 @@ export class QuestionController {
 
   @Post()
   @HttpCode(201)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Add question' })
+  @ApiBearerAuth()
   @ApiBody({
     type: CreateQuestionRequest,
     description: 'JSON structure for question',
@@ -51,7 +65,10 @@ export class QuestionController {
 
   @Get()
   @HttpCode(200)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Get all questions' })
+  @ApiBearerAuth()
   async getAllQuestions(): Promise<Question[]> {
     const questions = await this.questionService.getAll();
 
@@ -60,7 +77,10 @@ export class QuestionController {
 
   @Get(':id')
   @HttpCode(200)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Get question' })
+  @ApiBearerAuth()
   @ApiResponse({
     type: GetQuestionResponse,
     status: 200,
@@ -78,7 +98,10 @@ export class QuestionController {
 
   @Delete(':id')
   @HttpCode(200)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Delete question' })
+  @ApiBearerAuth()
   @ApiResponse({
     type: DeleteQuestionResponse,
     status: 200,
@@ -96,7 +119,10 @@ export class QuestionController {
 
   @Put(':id')
   @HttpCode(200)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Update question' })
+  @ApiBearerAuth()
   @ApiBody({
     type: UpdateQuestionRequest,
     description: 'JSON structure for update question',
