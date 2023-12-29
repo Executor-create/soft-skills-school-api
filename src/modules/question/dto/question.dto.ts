@@ -1,6 +1,6 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class QuestionDto {
   @ApiProperty({
@@ -55,4 +55,16 @@ export class CreateQuestionDto extends OmitType(QuestionDto, [
 export class UpdateQuestionDto extends OmitType(QuestionDto, [
   '_id',
   'created_at',
-] as const) {}
+] as const) {
+  @IsOptional()
+  question: string;
+
+  @IsOptional()
+  type: string;
+
+  @IsOptional()
+  category: string;
+
+  @IsOptional()
+  points: number;
+}

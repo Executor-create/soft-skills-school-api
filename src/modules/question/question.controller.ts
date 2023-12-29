@@ -5,8 +5,8 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
-  Put,
   UseGuards,
 } from '@nestjs/common';
 import { Question } from 'src/types/question.type';
@@ -117,7 +117,7 @@ export class QuestionController {
     return deletedQuestion;
   }
 
-  @Put(':id')
+  @Patch(':id')
   @HttpCode(200)
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
