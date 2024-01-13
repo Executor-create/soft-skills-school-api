@@ -15,6 +15,17 @@ export class UserService {
     private readonly logger: LoggerService,
   ) {}
 
+  async findAll(): Promise<User[]> {
+    const fetchedUsers = await this.userModel.find({});
+
+    if (fetchedUsers.length === 0) {
+      this.logger.error('Items not found');
+      throw new HttpException('Items not found', HttpStatus.NOT_FOUND);
+    }
+
+    return fetchedUsers;
+  }
+
   async findUserById(userId: findByIdDto): Promise<User> {
     const { id } = userId;
 
