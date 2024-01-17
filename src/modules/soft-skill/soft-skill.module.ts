@@ -6,6 +6,7 @@ import {
   SoftSkill,
   SoftSkillSchema,
 } from 'src/database/models/soft-skill.schema';
+import { LoggerService } from 'src/common/helpers/winston.logger';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import {
       { name: SoftSkill.name, schema: SoftSkillSchema },
     ]),
   ],
-  providers: [SoftSkillService],
+  providers: [SoftSkillService, LoggerService],
   controllers: [SoftSkillController],
 })
 export class SoftSkillModule {}
