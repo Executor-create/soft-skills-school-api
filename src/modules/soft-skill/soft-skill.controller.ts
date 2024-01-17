@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -23,10 +24,12 @@ import { Role } from 'src/common/enums/user-role.enum';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/role.guard';
 import {
-  CreateSoftSkillDtoRequest,
-  CreateSoftSkillDtoResponse,
-  GetSoftSkillDtoResponse,
+  CreateSoftSkillRequest,
+  CreateSoftSkillResponse,
+  DeleteSoftSkillResponse,
+  GetSoftSkillResponse,
 } from './dto/soft-skill-swagger.dto';
+import { deleteByIdDto } from 'src/common/dto/deleteById.dto';
 
 @ApiTags('Soft Skill')
 @Controller('soft-skills')
@@ -40,11 +43,11 @@ export class SoftSkillController {
   @ApiOperation({ summary: 'Add soft skill' })
   @ApiBearerAuth()
   @ApiBody({
-    type: CreateSoftSkillDtoRequest,
+    type: CreateSoftSkillRequest,
     description: 'JSON structure for soft skill',
   })
   @ApiResponse({
-    type: CreateSoftSkillDtoResponse,
+    type: CreateSoftSkillResponse,
     status: 201,
     description: 'The soft skill has been successfully created',
   })
@@ -63,7 +66,7 @@ export class SoftSkillController {
   @ApiOperation({ summary: 'Get soft skill' })
   @ApiBearerAuth()
   @ApiResponse({
-    type: GetSoftSkillDtoResponse,
+    type: GetSoftSkillResponse,
     status: 201,
     description: 'The soft skill has been successfully created',
   })
@@ -75,5 +78,28 @@ export class SoftSkillController {
     const fetchedSoftSkill = await this.softSkillService.get(softSkillId);
 
     return fetchedSoftSkill;
+  }
+
+  @Delete(':id')
+  @HttpCode(200)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Delete soft skill' })
+  @ApiBearerAuth()
+  @ApiResponse({
+    type: DeleteSoftSkillResponse,
+    status: 200,
+    description: 'Soft skill successfully deleted from database',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Soft skill not found',
+  })
+  async deleteSoftSkill(
+    @Param() softSkillId: deleteByIdDto,
+  ): Promise<SoftSkill> {
+    const deletedSoftSkill = await this.softSkillService.delete(softSkillId);
+
+    return deletedSoftSkill;
   }
 }

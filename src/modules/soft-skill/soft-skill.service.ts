@@ -6,6 +6,7 @@ import { CreateSoftSkillDto } from './dto/soft-skill.dto';
 import { SoftSkill } from 'src/types/soft-skill.type';
 import { findByIdDto } from 'src/common/dto/findById.dto';
 import { LoggerService } from 'src/common/helpers/winston.logger';
+import { deleteByIdDto } from 'src/common/dto/deleteById.dto';
 
 @Injectable()
 export class SoftSkillService {
@@ -37,5 +38,20 @@ export class SoftSkillService {
     }
 
     return fetchedSoftSkill;
+  }
+
+  async delete(softSkillId: deleteByIdDto): Promise<SoftSkill> {
+    const { id } = softSkillId;
+
+    const deletedSoftSkill = await this.softSkillModel.findByIdAndDelete(id);
+
+    this.logger.info('Deleted soft skill:', deletedSoftSkill);
+
+    if (!deletedSoftSkill) {
+      this.logger.error('Soft skill not found');
+      throw new HttpException('Soft skill not found', HttpStatus.NOT_FOUND);
+    }
+
+    return deletedSoftSkill;
   }
 }
