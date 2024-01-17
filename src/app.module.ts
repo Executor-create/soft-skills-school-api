@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './modules/user/user.module';
 import { QuestionModule } from './modules/question/question.module';
 import { TestModule } from './modules/quiz/quiz.module';
+import { SoftSkillModule } from './modules/soft-skill/soft-skill.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { TestModule } from './modules/quiz/quiz.module';
     UserModule,
     QuestionModule,
     TestModule,
+    SoftSkillModule,
   ],
   controllers: [AppController],
   providers: [AppService, Logger],
