@@ -25,6 +25,7 @@ import { RolesGuard } from 'src/common/guards/role.guard';
 import {
   CreateSoftSkillDtoRequest,
   CreateSoftSkillDtoResponse,
+  GetSoftSkillDtoResponse,
 } from './dto/soft-skill-swagger.dto';
 
 @ApiTags('Soft Skill')
@@ -57,6 +58,19 @@ export class SoftSkillController {
 
   @Get(':id')
   @HttpCode(200)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Get soft skill' })
+  @ApiBearerAuth()
+  @ApiResponse({
+    type: GetSoftSkillDtoResponse,
+    status: 201,
+    description: 'The soft skill has been successfully created',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Soft skill not found',
+  })
   async getSoftSkill(@Param() softSkillId: findByIdDto): Promise<SoftSkill> {
     const fetchedSoftSkill = await this.softSkillService.get(softSkillId);
 
