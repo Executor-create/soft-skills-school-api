@@ -27,6 +27,7 @@ import {
   CreateSoftSkillRequest,
   CreateSoftSkillResponse,
   DeleteSoftSkillResponse,
+  GetAllSoftSkillsResponse,
   GetSoftSkillResponse,
 } from './dto/soft-skill-swagger.dto';
 import { deleteByIdDto } from 'src/common/dto/deleteById.dto';
@@ -57,6 +58,27 @@ export class SoftSkillController {
     const newSoftSkill = await this.softSkillService.create(createSoftSkillDto);
 
     return newSoftSkill;
+  }
+
+  @Get()
+  @HttpCode(200)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Get all soft skills' })
+  @ApiBearerAuth()
+  @ApiResponse({
+    type: [GetAllSoftSkillsResponse],
+    status: 200,
+    description: 'Soft skills successfully retrieve from database',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Soft skills not found',
+  })
+  async getAllSoftSkills(): Promise<SoftSkill[]> {
+    const fetchedSoftSkills = await this.softSkillService.getAll();
+
+    return fetchedSoftSkills;
   }
 
   @Get(':id')

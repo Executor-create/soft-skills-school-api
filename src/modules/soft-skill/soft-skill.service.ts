@@ -25,6 +25,17 @@ export class SoftSkillService {
     return newSoftSkill;
   }
 
+  async getAll(): Promise<SoftSkill[]> {
+    const fetchedSoftSkills = await this.softSkillModel.find({});
+
+    if (fetchedSoftSkills.length === 0) {
+      this.logger.error('Soft skills not found');
+      throw new HttpException('Soft skills not found', HttpStatus.NOT_FOUND);
+    }
+
+    return fetchedSoftSkills;
+  }
+
   async get(softSkillId: findByIdDto): Promise<SoftSkill> {
     const { id } = softSkillId;
 
