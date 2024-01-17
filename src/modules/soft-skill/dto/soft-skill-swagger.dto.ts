@@ -10,3 +10,5 @@ export class CreateSoftSkillResponse extends SoftSkillDto {}
 export class GetSoftSkillResponse extends SoftSkillDto {}
 
 export class DeleteSoftSkillResponse extends SoftSkillDto {}
+
+export class GetAllSoftSkillsResponse extends SoftSkillDto {}
