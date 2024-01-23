@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpException,
@@ -26,11 +27,13 @@ import { RolesGuard } from 'src/common/guards/role.guard';
 import {
   CreateCharacteristicRequest,
   CreateCharacteristicResponse,
+  DeleteCharacteristicResponse,
   GetAllCharacteristicsResponse,
   GetCharacteristicResponse,
 } from './dto/characteristic-swagger.dto';
 import { findByIdDto } from 'src/common/dto/findById.dto';
 import { isValidObjectId } from 'mongoose';
+import { deleteByIdDto } from 'src/common/dto/deleteById.dto';
 
 @ApiTags('Characteristic')
 @Controller('characteristics')
@@ -126,5 +129,41 @@ export class CharacteristicController {
     );
 
     return fetchedCharacteristic;
+  }
+
+  @Delete(':id')
+  @HttpCode(200)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Delete characteristic' })
+  @ApiBearerAuth()
+  @ApiResponse({
+    type: DeleteCharacteristicResponse,
+    status: 200,
+    description: 'Characteristic successfully deleted from database',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Characteristic not found',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid ObjectID format in the path',
+  })
+  async deleteCharacteristic(
+    @Param() characteristicId: deleteByIdDto,
+  ): Promise<Characteristic> {
+    if (!isValidObjectId(characteristicId)) {
+      throw new HttpException(
+        'Invalid ObjectID format in the path',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const deletedCharacteristic = await this.characteristicService.delete(
+      characteristicId,
+    );
+
+    return deletedCharacteristic;
   }
 }

@@ -8,6 +8,7 @@ import { CreateCharacteristicDto } from './dto/characteristic.dto';
 import { SoftSkill } from 'src/types/soft-skill.type';
 import { SoftSkill as SoftSkillDB } from 'src/database/models/soft-skill.schema';
 import { findByIdDto } from 'src/common/dto/findById.dto';
+import { deleteByIdDto } from 'src/common/dto/deleteById.dto';
 
 @Injectable()
 export class CharacteristicService {
@@ -87,5 +88,19 @@ export class CharacteristicService {
     }
 
     return fetchedCharacteristic;
+  }
+
+  async delete(characteristicId: deleteByIdDto): Promise<Characteristic> {
+    const { id } = characteristicId;
+
+    const deletedCharacteristic =
+      await this.characteristicModel.findByIdAndDelete(id);
+
+    if (!deletedCharacteristic) {
+      this.logger.error('Characteristic not found');
+      throw new HttpException('Characteristic not found', HttpStatus.NOT_FOUND);
+    }
+
+    return deletedCharacteristic;
   }
 }
