@@ -7,3 +7,5 @@ export class CreateCharacteristicRequest extends OmitType(CharacteristicDto, [
 ] as const) {}
 
 export class CreateCharacteristicResponse extends CharacteristicDto {}
+
+export class GetAllCharacteristicsResponse extends CharacteristicDto {}
