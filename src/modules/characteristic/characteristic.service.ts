@@ -7,6 +7,7 @@ import { Characteristic } from 'src/types/characteristic.type';
 import { CreateCharacteristicDto } from './dto/characteristic.dto';
 import { SoftSkill } from 'src/types/soft-skill.type';
 import { SoftSkill as SoftSkillDB } from 'src/database/models/soft-skill.schema';
+import { findByIdDto } from 'src/common/dto/findById.dto';
 
 @Injectable()
 export class CharacteristicService {
@@ -73,5 +74,18 @@ export class CharacteristicService {
     }
 
     return fetchedCharacteristics;
+  }
+
+  async get(characteristicId: findByIdDto): Promise<Characteristic> {
+    const { id } = characteristicId;
+
+    const fetchedCharacteristic = await this.characteristicModel.findById(id);
+
+    if (!fetchedCharacteristic) {
+      this.logger.error('Characteristic not found');
+      throw new HttpException('Characteristic not found', HttpStatus.NOT_FOUND);
+    }
+
+    return fetchedCharacteristic;
   }
 }

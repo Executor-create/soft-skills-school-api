@@ -3,6 +3,9 @@ import {
   Controller,
   Get,
   HttpCode,
+  HttpException,
+  HttpStatus,
+  Param,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -24,7 +27,10 @@ import {
   CreateCharacteristicRequest,
   CreateCharacteristicResponse,
   GetAllCharacteristicsResponse,
+  GetCharacteristicResponse,
 } from './dto/characteristic-swagger.dto';
+import { findByIdDto } from 'src/common/dto/findById.dto';
+import { isValidObjectId } from 'mongoose';
 
 @ApiTags('Characteristic')
 @Controller('characteristics')
@@ -84,5 +90,41 @@ export class CharacteristicController {
     const fetchedCharacteristics = await this.characteristicService.getAll();
 
     return fetchedCharacteristics;
+  }
+
+  @Get(':id')
+  @HttpCode(200)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Get characteristic' })
+  @ApiBearerAuth()
+  @ApiResponse({
+    type: GetCharacteristicResponse,
+    status: 200,
+    description: 'The characteristic successfully retrieve from database',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Characteristic not found',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid ObjectID format in the path',
+  })
+  async getCharacteristic(
+    @Param() characteristicId: findByIdDto,
+  ): Promise<Characteristic> {
+    if (!isValidObjectId(characteristicId)) {
+      throw new HttpException(
+        'Invalid ObjectID format in the path',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const fetchedCharacteristic = await this.characteristicService.get(
+      characteristicId,
+    );
+
+    return fetchedCharacteristic;
   }
 }
