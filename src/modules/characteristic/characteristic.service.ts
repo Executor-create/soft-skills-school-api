@@ -60,4 +60,18 @@ export class CharacteristicService {
 
     return fetchedSoftSkill;
   }
+
+  async getAll(): Promise<Characteristic[]> {
+    const fetchedCharacteristics = await this.characteristicModel.find({});
+
+    if (fetchedCharacteristics.length === 0) {
+      this.logger.error('Characteristics not found');
+      throw new HttpException(
+        'Characteristics not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return fetchedCharacteristics;
+  }
 }

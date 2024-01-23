@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -16,6 +23,7 @@ import { RolesGuard } from 'src/common/guards/role.guard';
 import {
   CreateCharacteristicRequest,
   CreateCharacteristicResponse,
+  GetAllCharacteristicsResponse,
 } from './dto/characteristic-swagger.dto';
 
 @ApiTags('Characteristic')
@@ -55,5 +63,26 @@ export class CharacteristicController {
     );
 
     return newCharacteristic;
+  }
+
+  @Get()
+  @HttpCode(200)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Get all characteristics' })
+  @ApiBearerAuth()
+  @ApiResponse({
+    type: [GetAllCharacteristicsResponse],
+    status: 200,
+    description: 'Characteristics successfully retrieve from database',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Characteristics not found',
+  })
+  async getAllCharacteristics(): Promise<Characteristic[]> {
+    const fetchedCharacteristics = await this.characteristicService.getAll();
+
+    return fetchedCharacteristics;
   }
 }
