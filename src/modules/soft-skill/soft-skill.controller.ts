@@ -4,7 +4,10 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpException,
+  HttpStatus,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -16,7 +19,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { SoftSkillService } from './soft-skill.service';
-import { CreateSoftSkillDto } from './dto/soft-skill.dto';
+import { CreateSoftSkillDto, UpdateSoftSkillDto } from './dto/soft-skill.dto';
 import { SoftSkill } from 'src/types/soft-skill.type';
 import { findByIdDto } from 'src/common/dto/findById.dto';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -29,8 +32,12 @@ import {
   DeleteSoftSkillResponse,
   GetAllSoftSkillsResponse,
   GetSoftSkillResponse,
+  UpdateSoftSkillRequest,
+  UpdateSoftSkillResponse,
 } from './dto/soft-skill-swagger.dto';
 import { deleteByIdDto } from 'src/common/dto/deleteById.dto';
+import { UpdateByIdDto } from 'src/common/dto/updateById.dto';
+import { isValidObjectId } from 'mongoose';
 
 @ApiTags('Soft Skill')
 @Controller('soft-skills')
@@ -123,5 +130,47 @@ export class SoftSkillController {
     const deletedSoftSkill = await this.softSkillService.delete(softSkillId);
 
     return deletedSoftSkill;
+  }
+
+  @Patch(':id')
+  @HttpCode(200)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Update soft skill' })
+  @ApiBearerAuth()
+  @ApiBody({
+    type: UpdateSoftSkillRequest,
+    description: 'JSON structure for update soft skill',
+  })
+  @ApiResponse({
+    type: UpdateSoftSkillResponse,
+    status: 200,
+    description: 'The soft skill successfully updated',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Soft skill not found',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid ObjectID format in the path',
+  })
+  async updateSoftSkill(
+    @Param() softSkillId: UpdateByIdDto,
+    @Body() updateSoftSkillDto: UpdateSoftSkillDto,
+  ): Promise<SoftSkill> {
+    if (!isValidObjectId(softSkillId)) {
+      throw new HttpException(
+        'Invalid ObjectID format in the path',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const updatedSoftSkill = await this.softSkillService.update(
+      softSkillId,
+      updateSoftSkillDto,
+    );
+
+    return updatedSoftSkill;
   }
 }
