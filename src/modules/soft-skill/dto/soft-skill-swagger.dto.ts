@@ -12,3 +12,9 @@ export class GetSoftSkillResponse extends SoftSkillDto {}
 export class DeleteSoftSkillResponse extends SoftSkillDto {}
 
 export class GetAllSoftSkillsResponse extends SoftSkillDto {}
+
+export class UpdateSoftSkillRequest extends PickType(SoftSkillDto, [
+  'type',
+] as const) {}
+
+export class UpdateSoftSkillResponse extends SoftSkillDto {}

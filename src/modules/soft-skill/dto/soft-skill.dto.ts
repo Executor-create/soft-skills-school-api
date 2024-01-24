@@ -25,3 +25,7 @@ export class SoftSkillDto {
 export class CreateSoftSkillDto extends PickType(SoftSkillDto, [
   'type',
 ] as const) {}
+
+export class UpdateSoftSkillDto extends PickType(SoftSkillDto, [
+  'type',
+] as const) {}
