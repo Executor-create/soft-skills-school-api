@@ -7,11 +7,16 @@ import {
   SoftSkillSchema,
 } from 'src/database/models/soft-skill.schema';
 import { LoggerService } from 'src/common/helpers/winston.logger';
+import {
+  Characteristic,
+  CharacteristicSchema,
+} from 'src/database/models/characteristic.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: SoftSkill.name, schema: SoftSkillSchema },
+      { name: Characteristic.name, schema: CharacteristicSchema },
     ]),
   ],
   providers: [SoftSkillService, LoggerService],
