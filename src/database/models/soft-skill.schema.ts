@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { CharacteristicWithId } from 'src/types/soft-skill.type';
 
 export type SoftSkillDocument = HydratedDocument<SoftSkill>;
 
@@ -7,6 +8,9 @@ export type SoftSkillDocument = HydratedDocument<SoftSkill>;
 export class SoftSkill {
   @Prop()
   type: string;
+
+  @Prop()
+  characteristics?: CharacteristicWithId[];
 
   @Prop()
   created_at: Date;
