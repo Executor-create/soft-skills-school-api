@@ -1,7 +1,8 @@
-import { PickType } from '@nestjs/mapped-types';
+import { OmitType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ObjectId } from 'mongoose';
+import { CharacteristicWithId } from 'src/types/soft-skill.type';
 
 export class SoftSkillDto {
   @ApiProperty({
@@ -18,14 +19,36 @@ export class SoftSkillDto {
   @IsNotEmpty()
   type: string;
 
+  @ApiProperty({
+    example: [
+      {
+        characteristicId: '65b5c1cf9bb8450eb5c8009a',
+        title: 'Empathy',
+      },
+    ],
+    required: false,
+  })
+  @IsArray()
+  @IsNotEmpty()
+  @IsOptional()
+  characteristics?: CharacteristicWithId[];
+
   @ApiProperty()
   created_at: Date;
 }
 
-export class CreateSoftSkillDto extends PickType(SoftSkillDto, [
-  'type',
+export class CreateSoftSkillDto extends OmitType(SoftSkillDto, [
+  '_id',
+  'created_at',
 ] as const) {}
 
-export class UpdateSoftSkillDto extends PickType(SoftSkillDto, [
-  'type',
-] as const) {}
+export class UpdateSoftSkillDto extends OmitType(SoftSkillDto, [
+  '_id',
+  'created_at',
+] as const) {
+  @IsOptional()
+  type: string;
+
+  @IsOptional()
+  characteristics?: CharacteristicWithId[];
+}
