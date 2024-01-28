@@ -6,10 +6,10 @@ export type CharacteristicDocument = HydratedDocument<Characteristic>;
 @Schema()
 export class Characteristic {
   @Prop()
-  titles: string[];
+  title: string;
 
   @Prop({ type: mongoose.Types.ObjectId, ref: 'softSkill' })
-  softSkill: {
+  softSkill?: {
     softSkillId: ObjectId;
     type: string;
     created_at: Date;

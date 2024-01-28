@@ -1,11 +1,12 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsArray,
   IsMongoId,
   IsNotEmpty,
   IsNotEmptyObject,
   IsObject,
+  IsOptional,
+  IsString,
 } from 'class-validator';
 import { ObjectId } from 'mongoose';
 
@@ -19,12 +20,12 @@ export class CharacteristicDto {
   _id: ObjectId;
 
   @ApiProperty({
-    example: ['Self-respect', 'Empathy'],
+    example: 'Empathy',
     required: true,
   })
   @IsNotEmpty()
-  @IsArray()
-  titles: string[];
+  @IsString()
+  title: string;
 
   @ApiProperty({
     type: 'object',
@@ -40,6 +41,7 @@ export class CharacteristicDto {
   })
   @IsObject()
   @IsNotEmptyObject()
+  @IsOptional()
   softSkill: {
     softSkillId: ObjectId;
     type: string;
@@ -51,5 +53,6 @@ export class CharacteristicDto {
 
 export class CreateCharacteristicDto extends OmitType(CharacteristicDto, [
   '_id',
+  'softSkill',
   'created_at',
 ] as const) {}
