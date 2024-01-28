@@ -1,32 +1,91 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, isValidObjectId } from 'mongoose';
-import { SoftSkill as SoftSkillDB } from 'src/database/models/soft-skill.schema';
+import { Model, ObjectId, isValidObjectId } from 'mongoose';
+import {
+  SoftSkill as SoftSkillDB,
+  SoftSkillDocument,
+} from 'src/database/models/soft-skill.schema';
 import { CreateSoftSkillDto, UpdateSoftSkillDto } from './dto/soft-skill.dto';
 import { SoftSkill } from 'src/types/soft-skill.type';
 import { findByIdDto } from 'src/common/dto/findById.dto';
 import { LoggerService } from 'src/common/helpers/winston.logger';
 import { deleteByIdDto } from 'src/common/dto/deleteById.dto';
 import { UpdateByIdDto } from 'src/common/dto/updateById.dto';
-import { Characteristic } from 'src/database/models/characteristic.schema';
+import {
+  Characteristic as CharacteristicDB,
+  CharacteristicDocument,
+} from 'src/database/models/characteristic.schema';
 
 @Injectable()
 export class SoftSkillService {
   constructor(
     @InjectModel(SoftSkillDB.name)
     private readonly softSkillModel: Model<SoftSkillDB>,
-    @InjectModel(Characteristic.name)
-    private readonly characteristicModel: Model<Characteristic>,
+    @InjectModel(CharacteristicDB.name)
+    private readonly characteristicModel: Model<CharacteristicDB>,
     private readonly logger: LoggerService,
   ) {}
 
   async create(createSoftSkillDto: CreateSoftSkillDto): Promise<SoftSkill> {
-    const softSkill = new this.softSkillModel(createSoftSkillDto);
+    const { type, characteristics } = createSoftSkillDto;
+
+    const characteristicIds: ObjectId[] = characteristics.map(
+      (characteristic) => characteristic.characteristicId,
+    );
+
+    const fetchedCharacteristics: CharacteristicDocument[] =
+      await this.findCharacteristicsById(characteristicIds);
+
+    if (fetchedCharacteristics.length !== characteristicIds.length) {
+      const missingCharacteristicIds = characteristicIds.filter(
+        (charId: any) =>
+          !fetchedCharacteristics.some((char) => char._id.equals(charId)),
+      );
+
+      this.logger.error(
+        `Characteristics not found: ${missingCharacteristicIds.join(', ')}`,
+      );
+      throw new HttpException(
+        'Some characteristics not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const softSkill = new this.softSkillModel({ type, characteristics });
     softSkill.created_at = new Date();
 
     const newSoftSkill = await softSkill.save();
 
+    await this.addSoftSkillForCharacteristic(newSoftSkill, characteristicIds);
+
     return newSoftSkill;
+  }
+
+  async findCharacteristicsById(
+    characteristicIds: ObjectId[],
+  ): Promise<CharacteristicDocument[]> {
+    const fetchedCharacteristics = await this.characteristicModel.find({
+      _id: { $in: characteristicIds },
+    });
+
+    return fetchedCharacteristics;
+  }
+
+  async addSoftSkillForCharacteristic(
+    softSkill: SoftSkillDocument,
+    characteristicIds: ObjectId[],
+  ): Promise<void> {
+    await this.characteristicModel.updateMany(
+      {
+        _id: { $in: characteristicIds },
+      },
+      {
+        $set: {
+          'softSkill.softSkillId': softSkill.id,
+          'softSkill.type': softSkill.type,
+        },
+      },
+    );
   }
 
   async getAll(): Promise<SoftSkill[]> {
@@ -75,11 +134,11 @@ export class SoftSkillService {
     updateSoftSkillDto: UpdateSoftSkillDto,
   ): Promise<SoftSkill> {
     const { id } = softSkillId;
-    const { type } = updateSoftSkillDto;
+    const { type, characteristics } = updateSoftSkillDto;
 
     const updatedSoftSkill = await this.softSkillModel.findByIdAndUpdate(
       id,
-      { type },
+      { type, characteristics },
       { new: true },
     );
 
