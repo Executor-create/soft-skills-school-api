@@ -1,8 +1,8 @@
 import { ObjectId } from 'mongoose';
 
 export type Characteristic = {
-  titles: string[];
-  softSkill: {
+  title: string;
+  softSkill?: {
     softSkillId: ObjectId;
     type: string;
     created_at: Date;
