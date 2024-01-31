@@ -5,7 +5,6 @@ export type Characteristic = {
   softSkill?: {
     softSkillId: ObjectId;
     type: string;
-    created_at: Date;
   };
   created_at: Date;
 };
