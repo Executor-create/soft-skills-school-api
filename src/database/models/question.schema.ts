@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
+import { CharacteristicWithSoftSkill } from 'src/types/question.type';
 
 export type QuestionDocument = HydratedDocument<Question>;
 
@@ -12,7 +13,13 @@ export class Question {
   type: string;
 
   @Prop()
-  category: string;
+  answers: string[];
+
+  @Prop()
+  correctAnswers: boolean[];
+
+  @Prop({ type: mongoose.Types.ObjectId, ref: 'Characteristic' })
+  characteristics: CharacteristicWithSoftSkill[];
 
   @Prop()
   points: number;

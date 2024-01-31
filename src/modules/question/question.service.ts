@@ -1,24 +1,43 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Question as QuestionDB } from 'src/database/models/question.schema';
+import { Model, ObjectId } from 'mongoose';
+import {
+  Question as QuestionDB,
+  QuestionDocument,
+} from 'src/database/models/question.schema';
 import { CreateQuestionDto, UpdateQuestionDto } from './dto/question.dto';
-import { Question } from 'src/types/question.type';
+import { CharacteristicWithSoftSkill, Question } from 'src/types/question.type';
 import { LoggerService } from 'src/common/helpers/winston.logger';
 import { findByIdDto } from 'src/common/dto/findById.dto';
 import { deleteByIdDto } from 'src/common/dto/deleteById.dto';
 import { UpdateByIdDto } from 'src/common/dto/updateById.dto';
+import { Characteristic as CharacteristicDB } from 'src/database/models/characteristic.schema';
 
 @Injectable()
 export class QuestionService {
   constructor(
     @InjectModel(QuestionDB.name)
     private readonly questionModel: Model<QuestionDB>,
+    @InjectModel(CharacteristicDB.name)
+    private readonly characteristicModel: Model<CharacteristicDB>,
     private readonly logger: LoggerService,
   ) {}
 
-  async create(createQuestionDto: CreateQuestionDto): Promise<Question> {
+  async create(
+    createQuestionDto: CreateQuestionDto,
+  ): Promise<QuestionDocument> {
+    const { characteristics } = createQuestionDto;
+
+    const characteristicIds: ObjectId[] = characteristics.map(
+      (characteristicId) => characteristicId,
+    );
+
+    const fetchedCharacteristics = await this.findCharacteristicsById(
+      characteristicIds,
+    );
+
     const question = new this.questionModel(createQuestionDto);
+    question.characteristics = fetchedCharacteristics;
     question.created_at = new Date();
 
     const newQuestion = await question.save();
@@ -26,6 +45,43 @@ export class QuestionService {
     this.logger.info('Created question:', newQuestion);
 
     return newQuestion;
+  }
+
+  async findCharacteristicsById(
+    characteristicIds: ObjectId[],
+  ): Promise<CharacteristicWithSoftSkill[]> {
+    const fetchedCharacteristics = await this.characteristicModel.find({
+      _id: { $in: characteristicIds },
+    });
+
+    if (fetchedCharacteristics.length === 0) {
+      this.logger.error('Characteristics not found');
+      throw new HttpException(
+        'Characteristics not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const result = fetchedCharacteristics.map((characteristic) => {
+      const {
+        _id,
+        title,
+        softSkill: { softSkillId, type },
+        created_at,
+      } = characteristic;
+
+      return {
+        characteristicId: _id,
+        title,
+        softSkill: {
+          softSkillId,
+          type,
+        },
+        created_at,
+      };
+    });
+
+    return result;
   }
 
   async getAll(): Promise<Question[]> {
