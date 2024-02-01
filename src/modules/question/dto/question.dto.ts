@@ -4,7 +4,6 @@ import {
   IsArray,
   IsEnum,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -57,20 +56,22 @@ export class QuestionDto {
   correctAnswers?: boolean[];
 
   @ApiProperty({
-    example: 3,
-    required: true,
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  points: number;
-
-  @ApiProperty({
-    example: ['65b5c11125f8ef20c3de9ce3'],
-    required: true,
+    type: 'array',
+    items: {
+      type: 'object',
+      properties: {
+        characteristicId: {
+          example: '65b5c11125f8ef20c3de9ce3',
+        },
+        points: {
+          example: 5,
+        },
+      },
+    },
   })
   @IsNotEmpty()
   @IsArray()
-  characteristics: ObjectId[];
+  characteristics: Array<{ characteristicId: ObjectId; points: number }>;
 
   @ApiProperty()
   created_at: Date;

@@ -22,9 +22,6 @@ export class Question {
   characteristics: CharacteristicWithSoftSkill[];
 
   @Prop()
-  points: number;
-
-  @Prop()
   created_at: Date;
 }
 

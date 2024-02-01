@@ -29,11 +29,16 @@ export class QuestionService {
     const { characteristics } = createQuestionDto;
 
     const characteristicIds: ObjectId[] = characteristics.map(
-      (characteristicId) => characteristicId,
+      (characteristicId) => characteristicId.characteristicId,
+    );
+
+    const characteristicPoints: number[] = characteristics.map(
+      (characteristic) => characteristic.points,
     );
 
     const fetchedCharacteristics = await this.findCharacteristicsById(
       characteristicIds,
+      characteristicPoints,
     );
 
     const question = new this.questionModel(createQuestionDto);
@@ -49,6 +54,7 @@ export class QuestionService {
 
   async findCharacteristicsById(
     characteristicIds: ObjectId[],
+    characteristicPoints: number[],
   ): Promise<CharacteristicWithSoftSkill[]> {
     const fetchedCharacteristics = await this.characteristicModel.find({
       _id: { $in: characteristicIds },
@@ -62,7 +68,7 @@ export class QuestionService {
       );
     }
 
-    const result = fetchedCharacteristics.map((characteristic) => {
+    const result = fetchedCharacteristics.map((characteristic, index) => {
       const {
         _id,
         title,
@@ -70,9 +76,12 @@ export class QuestionService {
         created_at,
       } = characteristic;
 
+      const points = characteristicPoints[index];
+
       return {
         characteristicId: _id,
         title,
+        points,
         softSkill: {
           softSkillId,
           type,

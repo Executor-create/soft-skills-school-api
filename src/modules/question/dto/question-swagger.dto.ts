@@ -15,6 +15,9 @@ class CharacteristicDto {
         title: {
           example: 'Empathy',
         },
+        points: {
+          example: 5,
+        },
         softSkill: {
           type: 'object',
           properties: {
@@ -48,6 +51,15 @@ export class CreateQuestionResponse extends OmitType(QuestionDto, [
   })
   type: QuestionType;
 
+  @ApiProperty({
+    type: CharacteristicDto,
+  })
+  characteristics: CharacteristicDto[];
+}
+
+export class GetAllQuestionsResponse extends OmitType(QuestionDto, [
+  'characteristics',
+] as const) {
   @ApiProperty({
     type: CharacteristicDto,
   })
