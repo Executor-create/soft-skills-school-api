@@ -15,6 +15,9 @@ class CharacteristicDto {
         title: {
           example: 'Empathy',
         },
+        points: {
+          example: 5,
+        },
         softSkill: {
           type: 'object',
           properties: {
