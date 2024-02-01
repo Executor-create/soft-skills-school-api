@@ -25,6 +25,7 @@ import {
   CreateQuestionRequest,
   CreateQuestionResponse,
   DeleteQuestionResponse,
+  GetAllQuestionsResponse,
   GetQuestionResponse,
   UpdateQuestionRequest,
   UpdateQuestionResponse,
@@ -69,6 +70,11 @@ export class QuestionController {
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Get all questions' })
   @ApiBearerAuth()
+  @ApiResponse({
+    type: [GetAllQuestionsResponse],
+    status: 200,
+    description: 'The questions successfully retrieve from database',
+  })
   async getAllQuestions(): Promise<Question[]> {
     const questions = await this.questionService.getAll();
 
