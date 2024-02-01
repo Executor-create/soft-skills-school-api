@@ -3,6 +3,7 @@ import { ObjectId, Types } from 'mongoose';
 export type CharacteristicWithSoftSkill = {
   characteristicId: Types.ObjectId;
   title: string;
+  points: number;
   softSkill: {
     softSkillId: ObjectId;
     type: string;
@@ -16,6 +17,5 @@ export type Question = {
   answers?: string[];
   correctAnswers?: boolean[];
   characteristics: CharacteristicWithSoftSkill[];
-  points: number;
   created_at: Date;
 };
