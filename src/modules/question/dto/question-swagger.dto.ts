@@ -57,6 +57,15 @@ export class CreateQuestionResponse extends OmitType(QuestionDto, [
   characteristics: CharacteristicDto[];
 }
 
+export class GetAllQuestionsResponse extends OmitType(QuestionDto, [
+  'characteristics',
+] as const) {
+  @ApiProperty({
+    type: CharacteristicDto,
+  })
+  characteristics: CharacteristicDto[];
+}
+
 export class GetQuestionResponse extends OmitType(QuestionDto, [
   'characteristics',
 ] as const) {
