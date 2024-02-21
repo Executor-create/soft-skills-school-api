@@ -1,6 +1,14 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { ObjectId } from 'mongoose';
+import { QuestionType } from 'src/common/enums/question-type.enum';
 
 export class QuestionDto {
   @ApiProperty({
@@ -12,7 +20,7 @@ export class QuestionDto {
   _id: string;
 
   @ApiProperty({
-    example: 'You are good communicator',
+    example: 'What is active listening?',
     required: true,
   })
   @IsNotEmpty()
@@ -20,28 +28,50 @@ export class QuestionDto {
   question: string;
 
   @ApiProperty({
-    example: 'multiple_choice',
+    example: 'multiple_choice | yes_no | slider | radio',
     required: true,
   })
   @IsNotEmpty()
+  @IsEnum(QuestionType)
   @IsString()
-  type: string;
+  type: QuestionType;
 
   @ApiProperty({
-    example: 'Communication',
-    required: true,
+    example: [
+      'Actively concentrating, understanding, and responding in a conversation',
+      'Just hearing the words spoken without understanding the message',
+      'Giving full attention, making eye contact, and providing feedback',
+    ],
+    required: false,
   })
+  @IsOptional()
+  @IsArray()
   @IsNotEmpty()
-  @IsString()
-  category: string;
+  answers?: string[];
+
+  @ApiProperty({ example: [true, false, true] })
+  @IsOptional()
+  @IsArray()
+  @IsNotEmpty()
+  correctAnswers?: boolean[];
 
   @ApiProperty({
-    example: 3,
-    required: true,
+    type: 'array',
+    items: {
+      type: 'object',
+      properties: {
+        characteristicId: {
+          example: '65b5c11125f8ef20c3de9ce3',
+        },
+        points: {
+          example: 5,
+        },
+      },
+    },
   })
   @IsNotEmpty()
-  @IsNumber()
-  points: number;
+  @IsArray()
+  characteristics: Array<{ characteristicId: ObjectId; points: number }>;
 
   @ApiProperty()
   created_at: Date;
@@ -60,10 +90,7 @@ export class UpdateQuestionDto extends OmitType(QuestionDto, [
   question: string;
 
   @IsOptional()
-  type: string;
-
-  @IsOptional()
-  category: string;
+  type: QuestionType;
 
   @IsOptional()
   points: number;

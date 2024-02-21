@@ -20,6 +20,7 @@ import { UserService } from './user.service';
 import { isValidObjectId } from 'mongoose';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import {
+  GetAllUsersResponse,
   GetUserResponse,
   UpdateUserRequest,
   UpdateUserResponse,
@@ -35,6 +36,27 @@ import { UpdateUserDto } from './dto/user.dto';
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Get()
+  @HttpCode(200)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiBearerAuth()
+  @ApiResponse({
+    type: [GetAllUsersResponse],
+    status: 200,
+    description: 'The users successfully retrieve from database',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Items not found',
+  })
+  async getAllUsers(): Promise<User[]> {
+    const users = await this.userService.findAll();
+
+    return users;
+  }
 
   @Get(':id')
   @HttpCode(200)
