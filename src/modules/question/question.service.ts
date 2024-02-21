@@ -109,7 +109,7 @@ export class QuestionService {
 
     const fetchedQuestion = await this.questionModel.findById(id);
 
-    this.logger.info('Fetched user:', fetchedQuestion);
+    this.logger.info('Fetched question:', fetchedQuestion);
 
     if (!fetchedQuestion) {
       this.logger.error('Question not found');
