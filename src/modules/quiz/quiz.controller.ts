@@ -63,7 +63,7 @@ export class TestController {
 
   @Get()
   @HttpCode(201)
-  @Roles(Role.ADMIN)
+  @Roles(Role.USER, Role.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Get all tests' })
   @ApiBearerAuth()
@@ -80,7 +80,7 @@ export class TestController {
 
   @Get(':id')
   @HttpCode(201)
-  @Roles(Role.ADMIN)
+  @Roles(Role.USER, Role.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Get test' })
   @ApiBearerAuth()
