@@ -53,6 +53,5 @@ export class CharacteristicDto {
 
 export class CreateCharacteristicDto extends OmitType(CharacteristicDto, [
   '_id',
-  'softSkill',
   'created_at',
 ] as const) {}
