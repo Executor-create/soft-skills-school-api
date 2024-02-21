@@ -12,7 +12,6 @@ export class Characteristic {
   softSkill?: {
     softSkillId: ObjectId;
     type: string;
-    created_at: Date;
   };
 
   @Prop()
