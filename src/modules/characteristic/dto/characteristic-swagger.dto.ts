@@ -3,6 +3,7 @@ import { CharacteristicDto } from './characteristic.dto';
 
 export class CreateCharacteristicRequest extends OmitType(CharacteristicDto, [
   '_id',
+  'softSkill',
   'created_at',
 ] as const) {}
 
