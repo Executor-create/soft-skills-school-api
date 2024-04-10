@@ -1,7 +1,10 @@
-import { ObjectId } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
+import { Question } from './question.type';
 
 export type Test = {
   title: string;
-  questions: ObjectId[];
+  questions: Question[];
   created_at: Date;
+  created_by: string;
+  status: string;
 };
