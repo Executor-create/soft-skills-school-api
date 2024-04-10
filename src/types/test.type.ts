@@ -1,4 +1,3 @@
-import { ObjectId, Types } from 'mongoose';
 import { Question } from './question.type';
 
 export type Test = {
