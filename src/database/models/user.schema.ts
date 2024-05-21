@@ -34,6 +34,9 @@ export class User {
   token: string;
 
   @Prop()
+  tests: any[];
+
+  @Prop()
   created_at: Date;
 }
 

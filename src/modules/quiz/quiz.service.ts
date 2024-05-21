@@ -3,7 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { LoggerService } from 'src/common/helpers/winston.logger';
 import { Test as TestDB } from 'src/database/models/test.schema';
-import { Question } from 'src/database/models/question.schema';
+import {
+  Question,
+  QuestionLeanDocument,
+} from 'src/database/models/question.schema';
 import { CreateTestDto } from './dto/quiz.dto';
 import { Test } from 'src/types/test.type';
 import { findByIdDto } from 'src/common/dto/findById.dto';
@@ -13,7 +16,8 @@ import { deleteByIdDto } from 'src/common/dto/deleteById.dto';
 export class TestService {
   constructor(
     @InjectModel(TestDB.name) private readonly testModel: Model<TestDB>,
-    @InjectModel(Question.name) private readonly questionModel: Model<Question>,
+    @InjectModel(Question.name)
+    private readonly questionModel: Model<QuestionLeanDocument>,
     private readonly logger: LoggerService,
   ) {}
 
@@ -37,7 +41,9 @@ export class TestService {
     return newTest;
   }
 
-  async findQuestionById(questionIds: ObjectId[]): Promise<Question[]> {
+  async findQuestionById(
+    questionIds: ObjectId[],
+  ): Promise<QuestionLeanDocument[]> {
     const fetchedQuestions = await this.questionModel.find({
       _id: { $in: questionIds },
     });
@@ -60,6 +66,7 @@ export class TestService {
 
       return {
         questionId: _id,
+        _id,
         type,
         question,
         answers,

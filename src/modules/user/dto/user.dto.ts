@@ -6,6 +6,7 @@ import {
   IsNumber,
   IsEmail,
   IsOptional,
+  IsArray,
 } from 'class-validator';
 
 export class UserDto {
@@ -105,4 +106,14 @@ export class UpdateUserDto extends OmitType(UserDto, [
 
   @IsOptional()
   direction: string;
+}
+
+export class AddResultsDto {
+  @IsNotEmpty()
+  @IsString()
+  questionId: string;
+
+  @IsNotEmpty()
+  @IsArray()
+  answers: number[];
 }

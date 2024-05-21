@@ -15,7 +15,7 @@ export type Question = {
   question: string;
   type: string;
   answers?: string[];
-  correctAnswers?: boolean[];
+  correctAnswers?: number[];
   characteristics: CharacteristicWithSoftSkill[];
   created_at: Date;
 };
