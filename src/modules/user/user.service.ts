@@ -1,17 +1,19 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { findByIdDto } from 'src/common/dto/findById.dto';
 import { UpdateByIdDto } from 'src/common/dto/updateById.dto';
 import { LoggerService } from 'src/common/helpers/winston.logger';
 import { User as UserDB } from 'src/database/models/user.schema';
 import { User } from 'src/types/user.type';
-import { UpdateUserDto } from './dto/user.dto';
+import { AddResultsDto, UpdateUserDto } from './dto/user.dto';
+import { Test } from 'src/database/models/test.schema';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(UserDB.name) private readonly userModel: Model<UserDB>,
+    @InjectModel(Test.name) private readonly testModel: Model<Test>,
     private readonly logger: LoggerService,
   ) {}
 
@@ -26,7 +28,7 @@ export class UserService {
     return fetchedUsers;
   }
 
-  async findUserById(userId: findByIdDto): Promise<User> {
+  async findUserById(userId: findByIdDto): Promise<any> {
     const { id } = userId;
 
     const fetchedUser = await this.userModel.findById(id);
@@ -38,7 +40,23 @@ export class UserService {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
-    return fetchedUser;
+    const characteristics = Object.entries(
+      fetchedUser.tests
+        .flatMap((elem) => elem.results.characteristics)
+        .reduce((acc, current) => {
+          if (acc[current.characteristicId]) {
+            acc[current.characteristicId].push(current.points);
+          } else {
+            acc[current.characteristicId] = [current.points];
+          }
+          return acc;
+        }, {}),
+    ).map((elem) => ({
+      characteristicId: elem[0],
+      points: (elem[1] as any[]).reduce((acc, current) => acc + current, 0),
+    }));
+
+    return { ...fetchedUser.toObject(), characteristics };
   }
 
   async update(
@@ -61,5 +79,77 @@ export class UserService {
     }
 
     return updatedUser;
+  }
+
+  private isArrayEquals(a: any[], b: any[]) {
+    if (a.length !== b.length) {
+      return false;
+    }
+
+    const res = a.filter((elem) => b.includes(elem)).length;
+
+    return res == a.length;
+  }
+
+  async addResults(
+    body: AddResultsDto[],
+    userId: string,
+    testId: string,
+  ): Promise<void> {
+    const test = await this.testModel.findById(testId);
+
+    const { questions } = test;
+
+    const answerMap = body.reduce((acc, current) => {
+      return { ...acc, [current.questionId]: current.answers };
+    }, {});
+
+    const characteristics = {};
+
+    questions.forEach((question) => {
+      const answer = answerMap[(question as any).questionId.toString()];
+
+      if (!answer) {
+        // TODO: throw error if we don't found answer in some question
+        return;
+      }
+
+      const isCorrect = this.isArrayEquals(answer, question.correctAnswers);
+
+      if (!isCorrect) {
+        return;
+      }
+
+      question.characteristics.forEach((characteristic) => {
+        if (characteristics[characteristic.characteristicId.toString()]) {
+          characteristics[characteristic.characteristicId.toString()] +=
+            characteristic.points;
+        } else {
+          characteristics[characteristic.characteristicId.toString()] =
+            characteristic.points;
+        }
+      });
+    });
+
+    const characteristicArray = Object.entries(characteristics).map(
+      (characteristic) => ({
+        characteristicId: characteristic[0],
+        points: characteristic[1],
+      }),
+    );
+
+    const updatedUser = await this.userModel.updateOne(
+      {
+        _id: new Types.ObjectId(userId),
+      },
+      {
+        $push: {
+          tests: {
+            testId: new Types.ObjectId(testId),
+            results: { characteristics: characteristicArray },
+          },
+        },
+      },
+    );
   }
 }

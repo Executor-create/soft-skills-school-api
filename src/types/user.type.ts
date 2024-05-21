@@ -10,5 +10,6 @@ export type User = {
   direction: string;
   role: Role;
   token: string;
+  tests: any[];
   created_at: Date;
 };

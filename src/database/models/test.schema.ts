@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, ObjectId } from 'mongoose';
-import { Question } from './question.schema';
+import { Question, QuestionLeanDocument } from './question.schema';
 
 export type TestDocument = HydratedDocument<Test>;
 
@@ -10,7 +10,7 @@ export class Test {
   title: string;
 
   @Prop()
-  questions: Question[];
+  questions: QuestionLeanDocument[];
 
   @Prop()
   created_at: Date;

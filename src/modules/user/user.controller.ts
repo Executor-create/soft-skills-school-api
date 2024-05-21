@@ -5,6 +5,7 @@ import {
   HttpCode,
   Param,
   Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -30,7 +31,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/user-role.enum';
 import { RolesGuard } from 'src/common/guards/role.guard';
 import { UpdateByIdDto } from 'src/common/dto/updateById.dto';
-import { UpdateUserDto } from './dto/user.dto';
+import { AddResultsDto, UpdateUserDto } from './dto/user.dto';
 
 @ApiTags('User')
 @Controller('users')
@@ -113,5 +114,19 @@ export class UserController {
     const updatedUser = await this.userService.update(id, updateUserDto);
 
     return updatedUser;
+  }
+
+  @Post(':userId/tests/:testId/results')
+  @HttpCode(201)
+  @Roles(Role.USER)
+  @UseGuards(AuthGuard, RolesGuard)
+  async addResults(
+    @Body() body: AddResultsDto[],
+    @Param('userId') userId: string,
+    @Param('testId') testId: string,
+  ): Promise<void> {
+    const res = await this.userService.addResults(body, userId, testId);
+
+    return res;
   }
 }

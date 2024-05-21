@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument, Types } from 'mongoose';
 import { CharacteristicWithSoftSkill } from 'src/types/question.type';
 
 export type QuestionDocument = HydratedDocument<Question>;
+export type QuestionLeanDocument = Question & { _id: Types.ObjectId };
 
 @Schema()
 export class Question {
@@ -16,7 +17,7 @@ export class Question {
   answers: string[];
 
   @Prop()
-  correctAnswers: boolean[];
+  correctAnswers: number[];
 
   @Prop({ type: mongoose.Types.ObjectId, ref: 'Characteristic' })
   characteristics: CharacteristicWithSoftSkill[];

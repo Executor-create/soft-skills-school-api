@@ -4,10 +4,15 @@ import { UserController } from './user.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/database/models/user.schema';
 import { LoggerService } from 'src/common/helpers/winston.logger';
+import { Test } from '@nestjs/testing';
+import { TestSchema } from 'src/database/models/test.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: Test.name, schema: TestSchema },
+    ]),
   ],
   controllers: [UserController],
   providers: [UserService, LoggerService],
