@@ -124,7 +124,7 @@ export class UserController {
     @Body() body: AddResultsDto[],
     @Param('userId') userId: string,
     @Param('testId') testId: string,
-  ): Promise<void> {
+  ): Promise<User> {
     const res = await this.userService.addResults(body, userId, testId);
 
     return res;
