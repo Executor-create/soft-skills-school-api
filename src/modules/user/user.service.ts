@@ -95,7 +95,7 @@ export class UserService {
     body: AddResultsDto[],
     userId: string,
     testId: string,
-  ): Promise<void> {
+  ): Promise<User> {
     const test = await this.testModel.findById(testId);
 
     const { questions } = test;
@@ -110,13 +110,14 @@ export class UserService {
       const answer = answerMap[(question as any).questionId.toString()];
 
       if (!answer) {
-        // TODO: throw error if we don't found answer in some question
+        this.logger.info(`No answer found for question ID`);
         return;
       }
 
       const isCorrect = this.isArrayEquals(answer, question.correctAnswers);
 
       if (!isCorrect) {
+        this.logger.info(`Incorrect answer for question ID`);
         return;
       }
 
@@ -138,7 +139,7 @@ export class UserService {
       }),
     );
 
-    const updatedUser = await this.userModel.updateOne(
+    const updatedUser = await this.userModel.findOneAndUpdate(
       {
         _id: new Types.ObjectId(userId),
       },
@@ -151,5 +152,7 @@ export class UserService {
         },
       },
     );
+
+    return updatedUser;
   }
 }
