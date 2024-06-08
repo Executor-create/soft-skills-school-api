@@ -97,7 +97,7 @@ export class CharacteristicController {
 
   @Get(':id')
   @HttpCode(200)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.USER)
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Get characteristic' })
   @ApiBearerAuth()
