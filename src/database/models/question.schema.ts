@@ -19,7 +19,7 @@ export class Question {
   @Prop()
   correctAnswers: number[];
 
-  @Prop({ type: mongoose.Types.ObjectId, ref: 'Characteristic' })
+  @Prop({ type: Array<any> })
   characteristics: CharacteristicWithSoftSkill[];
 
   @Prop()

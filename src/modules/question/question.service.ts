@@ -67,8 +67,12 @@ export class QuestionService {
         HttpStatus.NOT_FOUND,
       );
     }
-
-    const result = fetchedCharacteristics.map((characteristic, index) => {
+    const fetchedCharacteristicsMap = fetchedCharacteristics.reduce(
+      (acc, curr) => ({ ...acc, [curr._id.toString()]: curr }),
+      {},
+    );
+    const result = characteristicIds.map((id, index) => {
+      const characteristic = fetchedCharacteristicsMap[id.toString()];
       const {
         _id,
         title,
