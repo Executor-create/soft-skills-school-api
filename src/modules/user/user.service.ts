@@ -114,22 +114,31 @@ export class UserService {
         return;
       }
 
-      const isCorrect = this.isArrayEquals(answer, question.correctAnswers);
+      // const isCorrect = this.isArrayEquals(answer, question.correctAnswers);
 
-      if (!isCorrect) {
-        this.logger.info(`Incorrect answer for question ID`);
-        return;
+      // if (!isCorrect) {
+      //   this.logger.info(`Incorrect answer for question ID`);
+      //   return;
+      // }
+
+      // question.characteristics.forEach((characteristic) => {
+      //   if (characteristics[characteristic.characteristicId.toString()]) {
+      //     characteristics[characteristic.characteristicId.toString()] +=
+      //       characteristic.points;
+      //   } else {
+      //     characteristics[characteristic.characteristicId.toString()] =
+      //       characteristic.points;
+      //   }
+      // });
+      const characteristic = question.characteristics[answer[0]];
+
+      if (characteristics[characteristic.characteristicId.toString()]) {
+        characteristics[characteristic.characteristicId.toString()] +=
+          characteristic.points;
+      } else {
+        characteristics[characteristic.characteristicId.toString()] =
+          characteristic.points;
       }
-
-      question.characteristics.forEach((characteristic) => {
-        if (characteristics[characteristic.characteristicId.toString()]) {
-          characteristics[characteristic.characteristicId.toString()] +=
-            characteristic.points;
-        } else {
-          characteristics[characteristic.characteristicId.toString()] =
-            characteristic.points;
-        }
-      });
     });
 
     const characteristicArray = Object.entries(characteristics).map(
@@ -138,6 +147,8 @@ export class UserService {
         points: characteristic[1],
       }),
     );
+
+    console.log('!!!!!!!!!', characteristicArray);
 
     const updatedUser = await this.userModel.findOneAndUpdate(
       {
@@ -151,6 +162,7 @@ export class UserService {
           },
         },
       },
+      { new: true },
     );
 
     return updatedUser;
