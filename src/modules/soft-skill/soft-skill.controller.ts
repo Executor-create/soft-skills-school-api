@@ -69,7 +69,7 @@ export class SoftSkillController {
 
   @Get()
   @HttpCode(200)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.USER)
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Get all soft skills' })
   @ApiBearerAuth()
