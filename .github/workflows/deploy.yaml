@@ -30,7 +30,7 @@ jobs:
           context: ./
           push: true
           dockerfile: ./Dockerfile
-          tags: bloodyexecutor/ec2:latest
+          tags: softskillschool/ec2:latest
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -52,11 +52,11 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'docker --version'
       - name: Pull Docker image
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo docker pull bloodyexecutor/ec2:latest'
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo docker pull softskillschool/ec2:latest'
       - name: Stop running container
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo docker stop ec2 || true'
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo docker rm ec2 || true'
       - name: Run new container
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo docker run -d --name ec2 -p 80:3000 -e MONGO_URL=${{ secrets.MONGO_URL }} -e PORT=${{ secrets.PORT }} -e JWT_SECRET=${{ secrets.JWT_SECRET }} bloodyexecutor/ec2:latest'
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo docker run -d --name ec2 -p 80:3000 -e MONGO_URL=${{ secrets.MONGO_URL }} -e PORT=${{ secrets.PORT }} -e JWT_SECRET=${{ secrets.JWT_SECRET }} softskillschool/ec2:latest'
