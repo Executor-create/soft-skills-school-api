@@ -30,7 +30,7 @@ jobs:
           context: ./
           push: true
           dockerfile: ./Dockerfile
-          tags: softskillschool/ec2:latest
+          tags: xwfeqi1/ec2:latest
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -52,7 +52,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'docker --version'
       - name: Pull Docker image
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo docker pull softskillschool/ec2:latest'
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo docker pull xwfeqi1/ec2:latest'
       - name: Stop running container
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_INSTANCE_IP }} 'sudo docker stop ec2 || true'
