@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 import { User } from 'src/types/user.type';
 import { AuthDto, SignInDto, SignUpDto } from './dto/auth.dto';
 import { AuthService } from './auth.service';
@@ -8,6 +8,8 @@ import {
   SignUpRequest,
   SignUpResponse,
 } from './dto/auth-swagger.dto';
+import { Throttle } from '@nestjs/throttler';
+import { CustomThrottlerGuard } from 'src/common/guards/throttle.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -33,6 +35,8 @@ export class AuthController {
     return user;
   }
 
+  @Throttle({ default: { limit: 5, ttl: 10000 } })
+  // @UseGuards(CustomThrottlerGuard)
   @Post('/signin')
   @ApiOperation({
     summary:
