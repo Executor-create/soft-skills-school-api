@@ -27,7 +27,8 @@ export class SoftSkillService {
   ) {}
 
   async create(createSoftSkillDto: CreateSoftSkillDto): Promise<SoftSkill> {
-    const { type, characteristics } = createSoftSkillDto;
+    const { type, characteristics, description, functionality } =
+      createSoftSkillDto;
 
     let characteristicIds: ObjectId[] = [];
 
@@ -55,7 +56,12 @@ export class SoftSkillService {
       );
     }
 
-    const softSkill = new this.softSkillModel({ type, characteristics });
+    const softSkill = new this.softSkillModel({
+      type,
+      characteristics,
+      description,
+      functionality,
+    });
     softSkill.created_at = new Date();
 
     const newSoftSkill = await softSkill.save();

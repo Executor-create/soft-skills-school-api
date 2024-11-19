@@ -13,6 +13,12 @@ export class SoftSkill {
   characteristics?: CharacteristicWithId[];
 
   @Prop()
+  description?: string;
+
+  @Prop()
+  functionality?: string;
+
+  @Prop()
   created_at: Date;
 }
 
