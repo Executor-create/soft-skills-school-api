@@ -9,6 +9,7 @@ import { QuestionModule } from './modules/question/question.module';
 import { TestModule } from './modules/quiz/quiz.module';
 import { SoftSkillModule } from './modules/soft-skill/soft-skill.module';
 import { CharacteristicModule } from './modules/characteristic/characteristic.module';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { CharacteristicModule } from './modules/characteristic/characteristic.mo
     TestModule,
     SoftSkillModule,
     CharacteristicModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService, Logger],
