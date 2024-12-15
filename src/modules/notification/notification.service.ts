@@ -8,9 +8,12 @@ import { User as UserDB } from 'src/database/models/user.schema';
 import { LoggerService } from 'src/common/helpers/winston.logger';
 import { findByIdDto } from 'src/common/dto/findById.dto';
 import { deleteByIdDto } from 'src/common/dto/deleteById.dto';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable()
 export class NotificationService {
+  private notificationSubject = new Subject<Notification>();
+
   constructor(
     @InjectModel(NotificationDB.name)
     private readonly notificationModel: Model<NotificationDB>,
@@ -32,6 +35,8 @@ export class NotificationService {
     });
 
     const savedNotification = await notification.save();
+
+    this.notificationSubject.next(savedNotification);
 
     return savedNotification;
   }
@@ -80,5 +85,21 @@ export class NotificationService {
     }
 
     return deletedNotification;
+  }
+
+  streamNotifications(): Observable<any> {
+    return new Observable((observer) => {
+      const subscription = this.notificationSubject.subscribe(
+        (notification) => {
+          observer.next({
+            data: notification,
+            id: notification._id.toString(),
+            event: 'notification',
+          });
+        },
+      );
+
+      return () => subscription.unsubscribe();
+    });
   }
 }

@@ -6,6 +6,7 @@ import {
   HttpCode,
   Param,
   Post,
+  Sse,
   UseGuards,
 } from '@nestjs/common';
 import { CreateNotificationDto } from './dto/notification.dto';
@@ -30,6 +31,7 @@ import {
   GetAllNotificationsResponse,
   GetNotificationResponse,
 } from './dto/notification-swagger.dto';
+import { Observable } from 'rxjs';
 
 @Controller('notifications')
 export class NotificationController {
@@ -54,6 +56,17 @@ export class NotificationController {
     const notification = await this.notificationService.create(body);
 
     return notification;
+  }
+
+  @Sse('stream')
+  @ApiOperation({ summary: 'Stream notifications via SSE' })
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    description: 'Real-time notification stream',
+  })
+  streamNotifications(): Observable<any> {
+    return this.notificationService.streamNotifications();
   }
 
   @Get()
