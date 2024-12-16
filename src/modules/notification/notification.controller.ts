@@ -23,6 +23,7 @@ import {
   ApiBody,
   ApiOperation,
   ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 import {
   CreateNotificationRequest,
@@ -33,6 +34,7 @@ import {
 } from './dto/notification-swagger.dto';
 import { Observable } from 'rxjs';
 
+@ApiTags('Notification')
 @Controller('notifications')
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
