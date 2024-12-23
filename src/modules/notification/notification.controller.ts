@@ -35,6 +35,8 @@ import {
   DeleteNotificationResponse,
   GetAllNotificationsResponse,
   GetNotificationResponse,
+  UpdateNotificationRequest,
+  UpdateNotificationResponse,
 } from './dto/notification-swagger.dto';
 import { Observable } from 'rxjs';
 
@@ -140,6 +142,15 @@ export class NotificationController {
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Update notification' })
   @ApiBearerAuth()
+  @ApiBody({
+    type: UpdateNotificationRequest,
+    description: 'JSON structure for notification',
+  })
+  @ApiResponse({
+    type: UpdateNotificationResponse,
+    status: 200,
+    description: 'The notification successfully updated',
+  })
   async update(
     @Param() id: findByIdDto,
     @Body() body: UpdateNotificationDto,
