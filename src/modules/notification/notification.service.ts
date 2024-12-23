@@ -1,5 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateNotificationDto } from './dto/notification.dto';
+import {
+  CreateNotificationDto,
+  UpdateNotificationDto,
+} from './dto/notification.dto';
 import { Notification } from 'src/types/notification.type';
 import { InjectModel } from '@nestjs/mongoose';
 import { Notification as NotificationDB } from 'src/database/models/notification.schema';
@@ -85,6 +88,26 @@ export class NotificationService {
     }
 
     return deletedNotification;
+  }
+
+  async update(
+    notificationId: findByIdDto,
+    body: UpdateNotificationDto,
+  ): Promise<Notification> {
+    const { id } = notificationId;
+
+    const updatedNotification = await this.notificationModel.findByIdAndUpdate(
+      id,
+      body,
+      { new: true },
+    );
+
+    if (!updatedNotification) {
+      this.logger.error('Notification not found');
+      throw new HttpException('Notification not found', HttpStatus.NOT_FOUND);
+    }
+
+    return updatedNotification;
   }
 
   streamNotifications(): Observable<any> {

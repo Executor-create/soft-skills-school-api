@@ -1,6 +1,6 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsObject, IsString } from 'class-validator';
+import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
 import { ObjectId } from 'mongoose';
 
 export class NotificationDto {
@@ -71,3 +71,23 @@ export class CreateNotificationDto extends OmitType(NotificationDto, [
   'created_at',
   'updated_at',
 ] as const) {}
+
+export class UpdateNotificationDto extends OmitType(NotificationDto, [
+  '_id',
+  'created_at',
+  'updated_at',
+  'ownerId',
+  'studentId',
+] as const) {
+  @IsOptional()
+  title: string;
+
+  @IsOptional()
+  type: string;
+
+  @IsOptional()
+  status: string;
+
+  @IsOptional()
+  meta: Record<string, string>;
+}
