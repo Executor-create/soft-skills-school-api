@@ -5,11 +5,15 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
   Sse,
   UseGuards,
 } from '@nestjs/common';
-import { CreateNotificationDto } from './dto/notification.dto';
+import {
+  CreateNotificationDto,
+  UpdateNotificationDto,
+} from './dto/notification.dto';
 import { Notification } from 'src/types/notification.type';
 import { NotificationService } from './notification.service';
 import { findByIdDto } from 'src/common/dto/findById.dto';
@@ -128,5 +132,20 @@ export class NotificationController {
     const deletedNotification = await this.notificationService.delete(id);
 
     return deletedNotification;
+  }
+
+  @Patch(':id')
+  @HttpCode(200)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Update notification' })
+  @ApiBearerAuth()
+  async update(
+    @Param() id: findByIdDto,
+    @Body() body: UpdateNotificationDto,
+  ): Promise<Notification> {
+    const updatedNotification = await this.notificationService.update(id, body);
+
+    return updatedNotification;
   }
 }
