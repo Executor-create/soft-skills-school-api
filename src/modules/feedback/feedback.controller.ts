@@ -23,6 +23,7 @@ import {
   ApiBody,
   ApiOperation,
   ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 import {
   CreateFeedbackRequest,
@@ -34,6 +35,7 @@ import {
   UpdateFeedbackResponse,
 } from './dto/feedback-swagger.dto';
 
+@ApiTags('Feedback')
 @Controller('feedbacks')
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
