@@ -6,7 +6,7 @@ export type NotificationDocument = HydratedDocument<Notification>;
 @Schema()
 export class Notification {
   @Prop({ type: Types.ObjectId })
-  studentId: ObjectId;
+  studentIds: ObjectId[];
 
   @Prop({ type: Types.ObjectId })
   ownerId: ObjectId;

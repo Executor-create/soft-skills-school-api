@@ -10,6 +10,7 @@ export type User = {
   direction: string;
   role: Role;
   token: string;
-  tests: any[];
+  tests: Record<string, any>[];
+  notifications: Notification[];
   created_at: Date;
 };

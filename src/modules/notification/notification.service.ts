@@ -25,19 +25,29 @@ export class NotificationService {
     private readonly logger: LoggerService,
   ) {}
 
-  async create(body: CreateNotificationDto): Promise<Notification> {
-    const { studentId } = body;
+  async create(
+    ownerId: string,
+    body: CreateNotificationDto,
+  ): Promise<Notification> {
+    const { studentIds } = body;
 
-    await this.checkStudentExists(studentId);
+    for (const studentId of studentIds) {
+      await this.checkStudentExists(studentId);
+    }
 
     const notification = new this.notificationModel({
       ...body,
+      ownerId,
       status: 'unread',
       created_at: new Date(),
       updated_at: null,
     });
 
     const savedNotification = await notification.save();
+
+    for (const studentId of studentIds) {
+      await this.addNotificationToUser(studentId, savedNotification);
+    }
 
     this.notificationSubject.next(savedNotification);
 
@@ -50,6 +60,19 @@ export class NotificationService {
     if (!fetchedUser) {
       throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
     }
+  }
+
+  async addNotificationToUser(
+    studentId: string,
+    notification: Notification,
+  ): Promise<void> {
+    await this.userModel.findByIdAndUpdate(
+      new Types.ObjectId(studentId),
+      {
+        $push: { notifications: notification },
+      },
+      { new: true },
+    );
   }
 
   async getAll(): Promise<Notification[]> {

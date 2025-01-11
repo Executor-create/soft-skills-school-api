@@ -39,6 +39,7 @@ import {
   UpdateNotificationResponse,
 } from './dto/notification-swagger.dto';
 import { Observable } from 'rxjs';
+import { User } from 'src/common/decorators/user.decorator';
 
 @ApiTags('Notification')
 @Controller('notifications')
@@ -60,8 +61,11 @@ export class NotificationController {
     status: 200,
     description: 'The notification has been successfully created',
   })
-  async create(@Body() body: CreateNotificationDto): Promise<Notification> {
-    const notification = await this.notificationService.create(body);
+  async create(
+    @User() user: any,
+    @Body() body: CreateNotificationDto,
+  ): Promise<Notification> {
+    const notification = await this.notificationService.create(user.sub, body);
 
     return notification;
   }

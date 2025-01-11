@@ -2,7 +2,7 @@ import { ObjectId, Types } from 'mongoose';
 
 export type Notification = {
   _id: Types.ObjectId;
-  studentId: ObjectId;
+  studentIds: ObjectId[];
   ownerId: ObjectId;
   title: string;
   meta: Record<string, string>;
