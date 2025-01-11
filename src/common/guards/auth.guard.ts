@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
         secret: process.env.JWT_SECRET,
       });
 
-      request.decodeData = payload;
+      request.user = payload;
     } catch (error) {
       this.logger.info('Authentication error:', error.message);
       throw new UnauthorizedException('Authentication failed');

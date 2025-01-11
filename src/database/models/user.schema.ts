@@ -34,7 +34,10 @@ export class User {
   token: string;
 
   @Prop()
-  tests: any[];
+  tests: Record<string, any>[];
+
+  @Prop()
+  notifications: Notification[];
 
   @Prop()
   created_at: Date;

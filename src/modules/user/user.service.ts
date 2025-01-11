@@ -114,22 +114,6 @@ export class UserService {
         return;
       }
 
-      // const isCorrect = this.isArrayEquals(answer, question.correctAnswers);
-
-      // if (!isCorrect) {
-      //   this.logger.info(`Incorrect answer for question ID`);
-      //   return;
-      // }
-
-      // question.characteristics.forEach((characteristic) => {
-      //   if (characteristics[characteristic.characteristicId.toString()]) {
-      //     characteristics[characteristic.characteristicId.toString()] +=
-      //       characteristic.points;
-      //   } else {
-      //     characteristics[characteristic.characteristicId.toString()] =
-      //       characteristic.points;
-      //   }
-      // });
       const characteristic = question.characteristics[answer[0]];
 
       if (characteristics[characteristic.characteristicId.toString()]) {
@@ -148,8 +132,6 @@ export class UserService {
       }),
     );
 
-    console.log('!!!!!!!!!', characteristicArray);
-
     const updatedUser = await this.userModel.findOneAndUpdate(
       {
         _id: new Types.ObjectId(userId),
@@ -159,6 +141,7 @@ export class UserService {
           tests: {
             testId: new Types.ObjectId(testId),
             results: { characteristics: characteristicArray },
+            created_at: new Date(),
           },
         },
       },

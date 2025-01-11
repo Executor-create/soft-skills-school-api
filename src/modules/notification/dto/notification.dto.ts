@@ -1,6 +1,12 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ObjectId } from 'mongoose';
 
 export class NotificationDto {
@@ -15,8 +21,8 @@ export class NotificationDto {
     required: true,
   })
   @IsNotEmpty()
-  @IsString()
-  studentId: string;
+  @IsArray()
+  studentIds: string[];
 
   @ApiProperty({
     example: '67391c0c3190251b64bf2633',
@@ -67,6 +73,7 @@ export class NotificationDto {
 
 export class CreateNotificationDto extends OmitType(NotificationDto, [
   '_id',
+  'ownerId',
   'status',
   'created_at',
   'updated_at',
@@ -77,7 +84,7 @@ export class UpdateNotificationDto extends OmitType(NotificationDto, [
   'created_at',
   'updated_at',
   'ownerId',
-  'studentId',
+  'studentIds',
 ] as const) {
   @IsOptional()
   title: string;

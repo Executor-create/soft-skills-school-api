@@ -2,8 +2,7 @@ import { ApiProperty, PickType } from '@nestjs/swagger';
 import { NotificationDto } from './notification.dto';
 
 export class CreateNotificationRequest extends PickType(NotificationDto, [
-  'studentId',
-  'ownerId',
+  'studentIds',
   'meta',
   'title',
   'type',
