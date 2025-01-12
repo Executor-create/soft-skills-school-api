@@ -83,7 +83,7 @@ export class NotificationController {
 
   @Get()
   @HttpCode(200)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.USER)
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Get all notifications' })
   @ApiBearerAuth()
@@ -100,7 +100,7 @@ export class NotificationController {
 
   @Get(':id')
   @HttpCode(200)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.USER)
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Get notification' })
   @ApiBearerAuth()
@@ -121,7 +121,7 @@ export class NotificationController {
 
   @Delete(':id')
   @HttpCode(200)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.USER)
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Delete notification' })
   @ApiBearerAuth()
