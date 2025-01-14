@@ -31,12 +31,22 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/user-role.enum';
 import { RolesGuard } from 'src/common/guards/role.guard';
 import { UpdateByIdDto } from 'src/common/dto/updateById.dto';
-import { AddResultsDto, UpdateUserDto } from './dto/user.dto';
+import {
+  AddBelbinResultsDto,
+  AddResultsDto,
+  UpdateUserDto,
+} from './dto/user.dto';
+import { BelbinService } from './belbin.service';
+import { LoggerService } from 'src/common/helpers/winston.logger';
 
 @ApiTags('User')
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly belbinService: BelbinService,
+    private readonly logger: LoggerService,
+  ) {}
 
   @Get()
   @HttpCode(200)
@@ -114,6 +124,21 @@ export class UserController {
     const updatedUser = await this.userService.update(id, updateUserDto);
 
     return updatedUser;
+  }
+
+  @Post(':userId/tests/belbin/results')
+  @HttpCode(201)
+  @Roles(Role.USER)
+  @UseGuards(AuthGuard, RolesGuard)
+  async addBelbinResults(
+    @Body() body: AddBelbinResultsDto[],
+    @Param('userId') userId: string,
+  ): Promise<User> {
+    await this.belbinService.calculate(body as any);
+
+    const res = await this.userService.addBelbinResults(body as any, userId);
+
+    return res;
   }
 
   @Post(':userId/tests/:testId/results')
