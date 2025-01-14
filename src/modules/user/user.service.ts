@@ -8,6 +8,7 @@ import { User as UserDB } from 'src/database/models/user.schema';
 import { User } from 'src/types/user.type';
 import { AddResultsDto, UpdateUserDto } from './dto/user.dto';
 import { Test } from 'src/database/models/test.schema';
+import { BELBIN_TEST_ID, BelbinRole } from 'src/common/enums/belbin.enum';
 
 @Injectable()
 export class UserService {
@@ -141,6 +142,38 @@ export class UserService {
           tests: {
             testId: new Types.ObjectId(testId),
             results: { characteristics: characteristicArray },
+            created_at: new Date(),
+          },
+        },
+      },
+      { new: true },
+    );
+
+    return updatedUser;
+  }
+
+  async addBelbinResults(
+    result: Record<BelbinRole, number>,
+    userId: string,
+  ): Promise<User> {
+    const testId = BELBIN_TEST_ID;
+    const test = await this.testModel.findById(testId);
+
+    if (!test) {
+      throw new HttpException(
+        `Test with ID ${testId} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const updatedUser = await this.userModel.findOneAndUpdate(
+      { _id: new Types.ObjectId(userId) },
+      {
+        $push: {
+          tests: {
+            testId,
+            type: 'belbin',
+            results: result,
             created_at: new Date(),
           },
         },

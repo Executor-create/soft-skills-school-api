@@ -1,5 +1,6 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
   IsString,
@@ -7,7 +8,12 @@ import {
   IsEmail,
   IsOptional,
   IsArray,
+  IsEnum,
+  Min,
+  Max,
+  ValidateNested,
 } from 'class-validator';
+import { BelbinRole } from 'src/common/enums/belbin.enum';
 
 export class UserDto {
   @ApiProperty({
@@ -116,4 +122,28 @@ export class AddResultsDto {
   @IsNotEmpty()
   @IsArray()
   answers: number[];
+}
+
+export class AddBelbinAnswerResultsDto {
+  @IsNotEmpty()
+  @IsString()
+  @IsEnum(BelbinRole)
+  role: BelbinRole;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(0)
+  @Max(10)
+  value: number;
+}
+
+export class AddBelbinResultsDto {
+  @IsNotEmpty()
+  @IsString()
+  questionId: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => AddBelbinAnswerResultsDto)
+  answers: { role: BelbinRole; value: number }[];
 }
