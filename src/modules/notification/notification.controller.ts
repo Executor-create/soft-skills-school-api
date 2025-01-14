@@ -142,7 +142,7 @@ export class NotificationController {
 
   @Patch(':id')
   @HttpCode(200)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.USER)
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Update notification' })
   @ApiBearerAuth()
