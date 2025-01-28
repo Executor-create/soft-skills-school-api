@@ -7,6 +7,7 @@ export class UploadService {
   private readonly s3 = new S3({
     accessKeyId: process.env.AWS_ACCESS_KEY,
     secretAccessKey: process.env.AWS_SECRET_KEY,
+    region: 'eu-north-1',
   });
 
   async uploadImage(image: Express.Multer.File): Promise<string> {
@@ -34,9 +35,9 @@ export class UploadService {
       Bucket: bucket,
       Key: name,
       Body: fileBuffer,
-      ACL: 'public-read',
       ContentType: mimetype,
       ContentDisposition: 'inline',
+      ACL: 'public-read',
     };
 
     try {
