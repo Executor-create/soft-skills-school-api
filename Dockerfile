@@ -18,4 +18,4 @@ EXPOSE $PORT
 
 RUN yarn build
 
-CMD ["yarn", "start"]
+CMD ["yarn", "start:ec2"]
