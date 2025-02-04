@@ -21,6 +21,8 @@ import { UserService } from './user.service';
 import { isValidObjectId } from 'mongoose';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import {
+  AddBelbinResultsRequest,
+  AddBelbinResultsResponse,
   GetAllUsersResponse,
   GetUserResponse,
   UpdateUserRequest,
@@ -130,6 +132,17 @@ export class UserController {
   @HttpCode(201)
   @Roles(Role.USER)
   @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Submit belbin test results' })
+  @ApiBearerAuth()
+  @ApiBody({
+    type: [AddBelbinResultsRequest],
+    description: 'JSON structure for submitting Belbin test results.',
+  })
+  @ApiResponse({
+    type: AddBelbinResultsResponse,
+    status: 201,
+    description: 'The results have been successfully added',
+  })
   async addBelbinResults(
     @Body() body: AddBelbinResultsDto[],
     @Param('userId') userId: string,
