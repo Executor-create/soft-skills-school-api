@@ -86,6 +86,26 @@ export class NotificationService {
     return fetchedNotifications;
   }
 
+  async getAllUsersNotifications(
+    userId: string,
+    pageSize: number,
+    pageNumber: number,
+  ): Promise<Notification[]> {
+    const skip = (pageNumber - 1) * pageSize;
+    const limit = pageSize;
+
+    const fetchedUser: any = await this.userModel
+      .findById(userId)
+      .select({ notifications: { $slice: [skip, limit] } });
+
+    if (!fetchedUser) {
+      this.logger.error('User not found');
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    return fetchedUser.notifications;
+  }
+
   async get(notificationId: findByIdDto): Promise<Notification> {
     const { id } = notificationId;
 

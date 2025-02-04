@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Sse,
   UseGuards,
 } from '@nestjs/common';
@@ -26,6 +27,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -94,6 +96,46 @@ export class NotificationController {
   })
   async getAll(): Promise<Notification[]> {
     const fetchedNotifications = await this.notificationService.getAll();
+
+    return fetchedNotifications;
+  }
+
+  @Get('/user-notifications')
+  @HttpCode(200)
+  @Roles(Role.ADMIN, Role.USER)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Get all users notifications' })
+  @ApiBearerAuth()
+  @ApiQuery({
+    name: 'pageSize',
+    type: Number,
+    description: 'Number of notifications per page',
+    required: false,
+    example: 10,
+  })
+  @ApiQuery({
+    name: 'pageNumber',
+    type: Number,
+    description: 'Page number for pagination',
+    required: false,
+    example: 1,
+  })
+  @ApiResponse({
+    type: [GetAllNotificationsResponse],
+    status: 200,
+    description: 'The users notifications successfully retrieve from database',
+  })
+  async getAllUsersNotifications(
+    @User() user: any,
+    @Query('pageSize') pageSize = 10,
+    @Query('pageNumber') pageNumber = 1,
+  ): Promise<Notification[]> {
+    const fetchedNotifications =
+      await this.notificationService.getAllUsersNotifications(
+        user.sub,
+        Number(pageSize),
+        Number(pageNumber),
+      );
 
     return fetchedNotifications;
   }
