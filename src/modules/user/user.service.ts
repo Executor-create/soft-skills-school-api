@@ -42,13 +42,13 @@ export class UserService {
     }
 
     const characteristics = Object.entries(
-      fetchedUser.tests
+      fetchedUser?.tests
         .flatMap((elem) => elem.results.characteristics)
         .reduce((acc, current) => {
-          if (acc[current.characteristicId]) {
-            acc[current.characteristicId].push(current.points);
+          if (acc[current?.characteristicId]) {
+            acc[current?.characteristicId].push(current?.points);
           } else {
-            acc[current.characteristicId] = [current.points];
+            acc[current?.characteristicId] = [current?.points];
           }
           return acc;
         }, {}),
