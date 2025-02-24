@@ -147,9 +147,9 @@ export class UserController {
     @Body() body: AddBelbinResultsDto[],
     @Param('userId') userId: string,
   ): Promise<User> {
-    await this.belbinService.calculate(body as any);
+    const result = await this.belbinService.calculate(body as any);
 
-    const res = await this.userService.addBelbinResults(body as any, userId);
+    const res = await this.userService.addBelbinResults(result, userId);
 
     return res;
   }
