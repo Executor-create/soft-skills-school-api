@@ -40,9 +40,9 @@ export class BelbinService {
   }
 
   validateTotalPoints(totalPoints: number): void {
-    if (totalPoints !== 30) {
+    if (totalPoints !== 70) {
       throw new HttpException(
-        `Total points must be exactly 30. Received: ${totalPoints}`,
+        `Total points must be exactly 70. Received: ${totalPoints}`,
         HttpStatus.BAD_REQUEST,
       );
     }
