@@ -74,7 +74,9 @@ export class AuthService {
       );
     }
 
-    const updatedUser = await this.addJwtToken(fetchedUser);
+    let updatedUser = await this.addJwtToken(fetchedUser);
+
+    updatedUser = await this.userModel.findOne({ email }).select('-password');
 
     return updatedUser;
   }
