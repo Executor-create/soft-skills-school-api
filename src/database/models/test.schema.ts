@@ -20,6 +20,9 @@ export class Test {
 
   @Prop()
   status: string;
+
+  @Prop()
+  timer: number;
 }
 
 export const TestSchema = SchemaFactory.createForClass(Test);
