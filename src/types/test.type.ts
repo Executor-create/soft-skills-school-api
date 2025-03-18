@@ -7,4 +7,5 @@ export type Test = {
   created_at: Date;
   created_by: string;
   status: string;
+  timer: number;
 };

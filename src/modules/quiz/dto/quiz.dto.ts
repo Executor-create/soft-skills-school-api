@@ -2,7 +2,6 @@ import { PickType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 import { ObjectId } from 'mongoose';
-import { Question } from 'src/types/question.type';
 
 export class TestDto {
   @ApiProperty({
@@ -27,7 +26,7 @@ export class TestDto {
   })
   @IsNotEmpty()
   @IsArray()
-  questions: Array<{ questionId: ObjectId}>;
+  questions: Array<{ questionId: ObjectId }>;
 
   @ApiProperty()
   created_at: Date;
@@ -37,6 +36,10 @@ export class TestDto {
 
   @ApiProperty()
   status: string;
+
+  @ApiProperty({ example: 120, required: false })
+  @IsNotEmpty()
+  timer: number;
 }
 
 export class CreateTestDto extends PickType(TestDto, [
@@ -44,4 +47,5 @@ export class CreateTestDto extends PickType(TestDto, [
   'questions',
   'created_by',
   'status',
+  'timer',
 ] as const) {}
