@@ -21,6 +21,14 @@ export class NotificationDto {
     required: true,
   })
   @IsNotEmpty()
+  @IsOptional()
+  testId: ObjectId;
+
+  @ApiProperty({
+    example: '67320ad23190251b64bf2608',
+    required: true,
+  })
+  @IsNotEmpty()
   @IsArray()
   studentIds: string[];
 
@@ -77,7 +85,7 @@ export class CreateNotificationDto extends OmitType(NotificationDto, [
   'status',
   'created_at',
   'updated_at',
-] as const) {}
+] as const) { }
 
 export class UpdateNotificationDto extends OmitType(NotificationDto, [
   '_id',

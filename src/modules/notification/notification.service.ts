@@ -23,7 +23,7 @@ export class NotificationService {
     @InjectModel(UserDB.name)
     private readonly userModel: Model<UserDB>,
     private readonly logger: LoggerService,
-  ) {}
+  ) { }
 
   async create(
     ownerId: string,
@@ -92,18 +92,15 @@ export class NotificationService {
     pageNumber: number,
   ): Promise<Notification[]> {
     const skip = (pageNumber - 1) * pageSize;
-    const limit = pageSize;
 
-    const fetchedUser: any = await this.userModel
-      .findById(userId)
-      .select({ notifications: { $slice: [skip, limit] } });
+    const notifications = await this.notificationModel
+      .find({ userId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(pageSize)
+      .exec();
 
-    if (!fetchedUser) {
-      this.logger.error('User not found');
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-
-    return fetchedUser.notifications;
+    return notifications
   }
 
   async get(notificationId: findByIdDto): Promise<Notification> {

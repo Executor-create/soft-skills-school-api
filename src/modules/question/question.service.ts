@@ -21,7 +21,7 @@ export class QuestionService {
     @InjectModel(CharacteristicDB.name)
     private readonly characteristicModel: Model<CharacteristicDB>,
     private readonly logger: LoggerService,
-  ) {}
+  ) { }
 
   async create(
     createQuestionDto: CreateQuestionDto,
@@ -29,11 +29,11 @@ export class QuestionService {
     const { characteristics } = createQuestionDto;
 
     const characteristicIds: ObjectId[] = characteristics.map(
-      (characteristicId) => characteristicId.characteristicId,
+      (characteristicId) => characteristicId?.characteristicId,
     );
 
     const characteristicPoints: number[] = characteristics.map(
-      (characteristic) => characteristic.points,
+      (characteristic) => characteristic?.points,
     );
 
     const fetchedCharacteristics = await this.findCharacteristicsById(
