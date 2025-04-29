@@ -38,13 +38,6 @@ export class QuestionDto {
   type: QuestionType;
 
   @ApiProperty({
-    example: 4,
-    required: true,
-  })
-  @IsNumber()
-  points: number;
-
-  @ApiProperty({
     example: [
       'Actively concentrating, understanding, and responding in a conversation',
       'Just hearing the words spoken without understanding the message',

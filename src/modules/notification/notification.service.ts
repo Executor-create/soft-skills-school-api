@@ -93,14 +93,18 @@ export class NotificationService {
   ): Promise<Notification[]> {
     const skip = (pageNumber - 1) * pageSize;
 
-    const notifications = await this.notificationModel
-      .find({ userId })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(pageSize)
-      .exec();
+    const limit = pageSize;
 
-    return notifications
+    const fetchedUser: any = await this.userModel
+      .findById(userId)
+      .select({ notifications: { $slice: [skip, limit] } });
+
+    if (!fetchedUser) {
+      this.logger.error('User not found');
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    return fetchedUser.notifications;
   }
 
   async get(notificationId: findByIdDto): Promise<Notification> {
