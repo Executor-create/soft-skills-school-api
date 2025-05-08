@@ -69,7 +69,12 @@ export class NotificationService {
     await this.userModel.findByIdAndUpdate(
       new Types.ObjectId(studentId),
       {
-        $push: { notifications: notification },
+        $push: {
+          notifications: {
+            $each: [notification],
+            $position: 0,
+          },
+        },
       },
       { new: true },
     );
