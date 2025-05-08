@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId } from 'mongoose';
+import { Model } from 'mongoose';
 import {
   Question as QuestionDB,
   QuestionDocument,
@@ -12,6 +12,7 @@ import { findByIdDto } from 'src/common/dto/findById.dto';
 import { deleteByIdDto } from 'src/common/dto/deleteById.dto';
 import { UpdateByIdDto } from 'src/common/dto/updateById.dto';
 import { Characteristic as CharacteristicDB } from 'src/database/models/characteristic.schema';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class QuestionService {
@@ -28,8 +29,8 @@ export class QuestionService {
   ): Promise<QuestionDocument> {
     const { characteristics } = createQuestionDto;
 
-    const characteristicIds: ObjectId[] = characteristics.map(
-      (characteristicId) => characteristicId?.characteristicId,
+    const characteristicIds = characteristics.map(
+      (characteristicId) => new Types.ObjectId(characteristicId?.characteristicId as any),
     );
 
     const characteristicPoints: number[] = characteristics.map(
@@ -53,7 +54,7 @@ export class QuestionService {
   }
 
   async findCharacteristicsById(
-    characteristicIds: ObjectId[],
+    characteristicIds: Types.ObjectId[],
     characteristicPoints: number[],
   ): Promise<CharacteristicWithSoftSkill[]> {
     const fetchedCharacteristics = await this.characteristicModel.find({
@@ -76,7 +77,7 @@ export class QuestionService {
       const {
         _id,
         title,
-        softSkill: { softSkillId, type },
+        softSkill,
         created_at,
       } = characteristic;
 
@@ -87,8 +88,8 @@ export class QuestionService {
         title,
         points,
         softSkill: {
-          softSkillId,
-          type,
+          softSkillId: softSkill?.softSkillId ?? null,
+          type: softSkill?.type ?? null,
         },
         created_at,
       };
