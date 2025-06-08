@@ -16,7 +16,7 @@ export class UserService {
     @InjectModel(UserDB.name) private readonly userModel: Model<UserDB>,
     @InjectModel(Test.name) private readonly testModel: Model<Test>,
     private readonly logger: LoggerService,
-  ) {}
+  ) { }
 
   async findAll(): Promise<User[]> {
     const fetchedUsers = await this.userModel.find({});
@@ -99,6 +99,7 @@ export class UserService {
   ): Promise<User> {
     const test = await this.testModel.findById(testId);
 
+    const { passageTime } = body[0];
     const { questions } = test;
 
     const answerMap = body.reduce((acc, current) => {
@@ -142,6 +143,7 @@ export class UserService {
           tests: {
             testId: new Types.ObjectId(testId),
             results: { characteristics: characteristicArray },
+            passageTime,
             created_at: new Date(),
           },
         },
