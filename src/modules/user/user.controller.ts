@@ -48,7 +48,7 @@ export class UserController {
     private readonly userService: UserService,
     private readonly belbinService: BelbinService,
     private readonly logger: LoggerService,
-  ) {}
+  ) { }
 
   @Get()
   @HttpCode(200)

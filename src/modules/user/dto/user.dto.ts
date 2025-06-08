@@ -122,6 +122,10 @@ export class AddResultsDto {
   @IsNotEmpty()
   @IsArray()
   answers: number[];
+
+  @IsNotEmpty()
+  @IsNumber()
+  passageTime: number;
 }
 
 export class AddBelbinAnswerResultsDto {
