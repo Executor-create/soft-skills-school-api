@@ -21,6 +21,14 @@ export class TestDto {
   title: string;
 
   @ApiProperty({
+    example: 'A test to determine your Belbin team roles',
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsString()
+  description: string;
+
+  @ApiProperty({
     example: ['6589f4d63e0c5b3029146e70', '6595864ee4eccdb3a64c8072'],
     required: true,
   })
@@ -44,8 +52,9 @@ export class TestDto {
 
 export class CreateTestDto extends PickType(TestDto, [
   'title',
+  'description',
   'questions',
   'created_by',
   'status',
   'timer',
-] as const) {}
+] as const) { }

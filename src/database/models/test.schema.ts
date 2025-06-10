@@ -10,6 +10,9 @@ export class Test {
   title: string;
 
   @Prop()
+  description: string;
+
+  @Prop()
   questions: QuestionLeanDocument[];
 
   @Prop()
