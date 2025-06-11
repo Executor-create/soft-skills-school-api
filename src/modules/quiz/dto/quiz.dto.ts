@@ -1,6 +1,6 @@
 import { PickType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ObjectId } from 'mongoose';
 
 export class TestDto {
@@ -26,6 +26,7 @@ export class TestDto {
   })
   @IsNotEmpty()
   @IsString()
+  @IsOptional()
   description: string;
 
   @ApiProperty({
