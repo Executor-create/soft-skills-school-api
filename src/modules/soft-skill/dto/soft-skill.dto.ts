@@ -33,6 +33,26 @@ export class SoftSkillDto {
   @IsOptional()
   characteristics?: CharacteristicWithId[];
 
+  @ApiProperty({
+    example:
+      'A communicator is the ability to communicate effectively, clearly and confidently with other people both orally and in writing',
+    required: false,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  description: string;
+
+  @ApiProperty({
+    example:
+      'Communicators are valuable to a company because of their ability to build trusting relationships, communicate ideas effectively, and support productive interaction between teams',
+    required: false,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  functionality: string;
+
   @ApiProperty()
   created_at: Date;
 }
@@ -51,4 +71,10 @@ export class UpdateSoftSkillDto extends OmitType(SoftSkillDto, [
 
   @IsOptional()
   characteristics?: CharacteristicWithId[];
+
+  @IsOptional()
+  description: string;
+
+  @IsOptional()
+  functionality: string;
 }

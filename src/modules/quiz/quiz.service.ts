@@ -22,7 +22,7 @@ export class TestService {
   ) {}
 
   async create(createTestDto: CreateTestDto): Promise<Test> {
-    const { questions, created_by, status } = createTestDto;
+    const { questions, created_by, status, timer } = createTestDto;
 
     const questionIds: any[] = questions;
 
@@ -33,6 +33,7 @@ export class TestService {
     test.created_at = new Date();
     test.created_by = created_by;
     test.status = status;
+    test.timer = timer;
 
     const newTest = await test.save();
 

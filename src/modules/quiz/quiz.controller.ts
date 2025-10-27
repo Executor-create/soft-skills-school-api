@@ -34,6 +34,7 @@ import {
 } from './dto/quiz-swagger.dto';
 import { deleteByIdDto } from 'src/common/dto/deleteById.dto';
 import { isValidObjectId } from 'mongoose';
+import { BELBIN_TEST_ID } from 'src/common/enums/belbin.enum';
 
 @ApiTags('Test')
 @Controller('tests')
@@ -76,6 +77,27 @@ export class TestController {
     const fetchedTests = await this.testService.getAll();
 
     return fetchedTests;
+  }
+
+  @Get('/belbin')
+  @HttpCode(201)
+  @Roles(Role.USER, Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Get belbin test' })
+  @ApiBearerAuth()
+  @ApiResponse({
+    type: GetTestResponse,
+    status: 201,
+    description: 'The test successfully retrieve from database',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Test not found',
+  })
+  async getBelbinTest(): Promise<Test> {
+    const fetchedTest = await this.testService.get(BELBIN_TEST_ID as any);
+
+    return fetchedTest;
   }
 
   @Get(':id')

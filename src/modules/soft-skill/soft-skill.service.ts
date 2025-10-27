@@ -27,11 +27,16 @@ export class SoftSkillService {
   ) {}
 
   async create(createSoftSkillDto: CreateSoftSkillDto): Promise<SoftSkill> {
-    const { type, characteristics } = createSoftSkillDto;
+    const { type, characteristics, description, functionality } =
+      createSoftSkillDto;
 
-    const characteristicIds: ObjectId[] = characteristics.map(
-      (characteristic) => characteristic.characteristicId,
-    );
+    let characteristicIds: ObjectId[] = [];
+
+    if (characteristics && characteristics.length > 0) {
+      characteristicIds = characteristics.map(
+        (characteristic) => characteristic.characteristicId,
+      );
+    }
 
     const fetchedCharacteristics: CharacteristicDocument[] =
       await this.findCharacteristicsById(characteristicIds);
@@ -51,7 +56,12 @@ export class SoftSkillService {
       );
     }
 
-    const softSkill = new this.softSkillModel({ type, characteristics });
+    const softSkill = new this.softSkillModel({
+      type,
+      characteristics,
+      description,
+      functionality,
+    });
     softSkill.created_at = new Date();
 
     const newSoftSkill = await softSkill.save();

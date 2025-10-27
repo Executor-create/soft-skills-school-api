@@ -4,6 +4,8 @@ import { SoftSkillDto } from './soft-skill.dto';
 export class CreateSoftSkillRequest extends PickType(SoftSkillDto, [
   'type',
   'characteristics',
+  'description',
+  'functionality',
 ] as const) {}
 
 export class CreateSoftSkillResponse extends SoftSkillDto {}

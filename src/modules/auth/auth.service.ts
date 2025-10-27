@@ -28,6 +28,7 @@ export class AuthService {
     const user = new this.userModel(signUpDto);
     user.password = hashedPassword;
     user.role = Role.USER;
+    user.notifications = [];
     user.created_at = new Date();
 
     const newUser = await user.save();
@@ -73,7 +74,9 @@ export class AuthService {
       );
     }
 
-    const updatedUser = await this.addJwtToken(fetchedUser);
+    let updatedUser = await this.addJwtToken(fetchedUser);
+
+    updatedUser = await this.userModel.findOne({ email }).select('-password');
 
     return updatedUser;
   }

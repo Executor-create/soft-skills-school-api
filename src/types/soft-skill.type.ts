@@ -8,5 +8,7 @@ export type CharacteristicWithId = {
 export type SoftSkill = {
   type: string;
   characteristics?: CharacteristicWithId[];
+  description?: string;
+  functionality?: string;
   created_at: Date;
 };

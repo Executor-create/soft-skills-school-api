@@ -10,6 +10,9 @@ export class Test {
   title: string;
 
   @Prop()
+  description: string;
+
+  @Prop()
   questions: QuestionLeanDocument[];
 
   @Prop()
@@ -20,6 +23,9 @@ export class Test {
 
   @Prop()
   status: string;
+
+  @Prop()
+  timer: number;
 }
 
 export const TestSchema = SchemaFactory.createForClass(Test);

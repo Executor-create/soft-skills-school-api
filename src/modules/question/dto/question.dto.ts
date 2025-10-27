@@ -4,6 +4,7 @@ import {
   IsArray,
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -80,7 +81,7 @@ export class QuestionDto {
 export class CreateQuestionDto extends OmitType(QuestionDto, [
   '_id',
   'created_at',
-] as const) {}
+] as const) { }
 
 export class UpdateQuestionDto extends OmitType(QuestionDto, [
   '_id',

@@ -6,6 +6,7 @@ import { User, UserSchema } from 'src/database/models/user.schema';
 import { LoggerService } from 'src/common/helpers/winston.logger';
 import { Test } from '@nestjs/testing';
 import { TestSchema } from 'src/database/models/test.schema';
+import { BelbinService } from './belbin.service';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { TestSchema } from 'src/database/models/test.schema';
     ]),
   ],
   controllers: [UserController],
-  providers: [UserService, LoggerService],
+  providers: [UserService, LoggerService, BelbinService],
 })
 export class UserModule {}

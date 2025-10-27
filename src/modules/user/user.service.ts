@@ -8,6 +8,7 @@ import { User as UserDB } from 'src/database/models/user.schema';
 import { User } from 'src/types/user.type';
 import { AddResultsDto, UpdateUserDto } from './dto/user.dto';
 import { Test } from 'src/database/models/test.schema';
+import { BELBIN_TEST_ID, BelbinRole } from 'src/common/enums/belbin.enum';
 
 @Injectable()
 export class UserService {
@@ -15,7 +16,7 @@ export class UserService {
     @InjectModel(UserDB.name) private readonly userModel: Model<UserDB>,
     @InjectModel(Test.name) private readonly testModel: Model<Test>,
     private readonly logger: LoggerService,
-  ) {}
+  ) { }
 
   async findAll(): Promise<User[]> {
     const fetchedUsers = await this.userModel.find({});
@@ -41,13 +42,13 @@ export class UserService {
     }
 
     const characteristics = Object.entries(
-      fetchedUser.tests
+      fetchedUser?.tests
         .flatMap((elem) => elem.results.characteristics)
         .reduce((acc, current) => {
-          if (acc[current.characteristicId]) {
-            acc[current.characteristicId].push(current.points);
+          if (acc[current?.characteristicId]) {
+            acc[current?.characteristicId].push(current?.points);
           } else {
-            acc[current.characteristicId] = [current.points];
+            acc[current?.characteristicId] = [current?.points];
           }
           return acc;
         }, {}),
@@ -98,6 +99,7 @@ export class UserService {
   ): Promise<User> {
     const test = await this.testModel.findById(testId);
 
+    const { passageTime } = body[0];
     const { questions } = test;
 
     const answerMap = body.reduce((acc, current) => {
@@ -114,22 +116,6 @@ export class UserService {
         return;
       }
 
-      // const isCorrect = this.isArrayEquals(answer, question.correctAnswers);
-
-      // if (!isCorrect) {
-      //   this.logger.info(`Incorrect answer for question ID`);
-      //   return;
-      // }
-
-      // question.characteristics.forEach((characteristic) => {
-      //   if (characteristics[characteristic.characteristicId.toString()]) {
-      //     characteristics[characteristic.characteristicId.toString()] +=
-      //       characteristic.points;
-      //   } else {
-      //     characteristics[characteristic.characteristicId.toString()] =
-      //       characteristic.points;
-      //   }
-      // });
       const characteristic = question.characteristics[answer[0]];
 
       if (characteristics[characteristic.characteristicId.toString()]) {
@@ -148,8 +134,6 @@ export class UserService {
       }),
     );
 
-    console.log('!!!!!!!!!', characteristicArray);
-
     const updatedUser = await this.userModel.findOneAndUpdate(
       {
         _id: new Types.ObjectId(userId),
@@ -159,6 +143,40 @@ export class UserService {
           tests: {
             testId: new Types.ObjectId(testId),
             results: { characteristics: characteristicArray },
+            passageTime,
+            created_at: new Date(),
+          },
+        },
+      },
+      { new: true },
+    );
+
+    return updatedUser;
+  }
+
+  async addBelbinResults(
+    result: Record<BelbinRole, number>,
+    userId: string,
+  ): Promise<User> {
+    const testId = BELBIN_TEST_ID;
+    const test = await this.testModel.findById(testId);
+
+    if (!test) {
+      throw new HttpException(
+        `Test with ID ${testId} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const updatedUser = await this.userModel.findOneAndUpdate(
+      { _id: new Types.ObjectId(userId) },
+      {
+        $push: {
+          tests: {
+            testId,
+            type: 'belbin',
+            results: result,
+            created_at: new Date(),
           },
         },
       },
